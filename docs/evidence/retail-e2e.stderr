@@ -1,0 +1,5 @@
+normalizing historical batch 2010-12
+batch 2010-12: 42481 rows, 273 quarantined, 20 dates delivered
+normalizing historical batch 2011-01
+batch 2011-01: 35147 rows, 140 quarantined, 24 dates delivered
+reconciling every delivered country/day against independent raw XLSX pass

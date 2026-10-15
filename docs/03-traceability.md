@@ -26,3 +26,8 @@
 | R08加强 | test_backup_preserves_queued_and_cancelled_without_reexecuting | 备份还原保留队列和取消，原目录不变 |
 | R10 | operations、CLI health/monitor/config-check、launchd monitor | 严格配置、心跳、截止检查、缺ready可见、到期跳过、事务本地通知去重/恢复；tests/test_review.py和scripts/verify_operations.py |
 | R11 | core.release/verify_release、worker最小环境 | 单SELECT、阻止外部读取、manifest篡改拒绝，云/数据库测试凭据不传子进程 |
+
+
+## 公开真实零售产品
+
+[业务契约P01–P07](08-public-retail-contract.md) → public_retail（有界下载、xlsx schema与Decimal规范化、来源manifest） → retail_compute与definitions/retail_daily.sql（独立整数oracle） → core注册产品/通用查询（worker和publish事务复用） → tests/test_public_retail.py（7个故障/业务case）与scripts/retail_e2e.py（真实两月、231国家日、发布恢复和备份核对） → [原始验收证据](evidence/retail-acceptance.md)。

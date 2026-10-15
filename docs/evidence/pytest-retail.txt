@@ -1,0 +1,15 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.8, pytest-8.4.2, pluggy-1.6.0 -- /Users/lianggao/Documents/Codex/2026-10-15/task/data-process/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/lianggao/Documents/Codex/2026-10-15/task/data-process
+configfile: pyproject.toml
+collecting ... collected 6 items
+
+tests/test_public_retail.py::test_bounded_fetch_hash_cache_and_no_retry PASSED [ 16%]
+tests/test_public_retail.py::test_network_bad_hash_size_source_and_archive_fail_closed PASSED [ 33%]
+tests/test_public_retail.py::test_transfer_enforces_actual_stream_limit_and_terminates_child PASSED [ 50%]
+tests/test_public_retail.py::test_missing_columns_and_excessive_anomalies_do_not_mark_ready PASSED [ 66%]
+tests/test_public_retail.py::test_exact_money_cancellation_and_missing_optional_fields PASSED [ 83%]
+tests/test_public_retail.py::test_two_batches_idempotence_publish_failure_restore_and_private_schema PASSED [100%]
+
+============================== 6 passed in 0.39s ===============================

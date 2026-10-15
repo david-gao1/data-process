@@ -94,23 +94,35 @@ class Platform:
             ''')
         return {"home": str(self.home)}
 
-    def release(self, definition):
+    def release(self, definition, product="daily_active"):
+        calculators = {"daily_active": "compute.py", "retail_daily": "retail_compute.py"}
+        if product not in calculators:
+            raise ValueError("unknown registered product")
+        with self.db() as con:
+            products = {json.loads(r[0]).get("product", "daily_active") for r in con.execute("SELECT manifest FROM releases")}
+        if products and products != {product}:
+            raise ValueError("one product per data home; use a separate --home")
         sql = Path(definition).read_text()
         with duckdb.connect() as con:
             statements = con.extract_statements(sql)
             if len(statements) != 1 or statements[0].type != duckdb.StatementType.SELECT:
                 raise ValueError("definition must contain exactly one SELECT statement")
         files = {"definition.sql": Path(definition).read_bytes(),
-                 "compute.py": Path(__file__).with_name("compute.py").read_bytes(),
+                 "compute.py": Path(__file__).with_name(calculators[product]).read_bytes(),
                  "uv.lock": (ROOT / "uv.lock").read_bytes()}
         manifest = {"files": {k: digest(v) for k, v in files.items()},
                     "duckdb": duckdb.__version__, "python": sys.version.split()[0], "contract": 1}
+        if product != "daily_active":
+            manifest["product"] = product
         encoded = json.dumps(manifest, sort_keys=True)
         release_id = digest(encoded.encode())
         for name, data in files.items():
             durable_write(self.home / "releases" / release_id / name, data)
         durable_write(self.home / "releases" / release_id / "manifest.json", encoded.encode())
         with self.db(True) as con:
+            registered_products = {json.loads(r[0]).get("product", "daily_active") for r in con.execute("SELECT manifest FROM releases")}
+            if registered_products and registered_products != {product}:
+                raise ValueError("one product per data home; use a separate --home")
             con.execute("INSERT OR IGNORE INTO releases VALUES (?,?)", (release_id, encoded))
         return release_id
 
@@ -254,9 +266,10 @@ class Platform:
         with duckdb.connect(config={"threads": 1}) as con:
             for row in rows:
                 path = self.verify_artifact(row)
-                for business_date, province, active_users in con.execute("SELECT * FROM read_parquet(?) ORDER BY province", [str(path)]).fetchall():
-                    result.append(dict(business_date=business_date, province=province, active_users=active_users,
-                                       run_id=row["id"], release_id=row["release"], source_id=row["source"]))
+                query = con.execute("SELECT * FROM read_parquet(?) ORDER BY 2", [str(path)])
+                columns = [c[0] for c in query.description]
+                for values in query.fetchall():
+                    result.append(dict(zip(columns, values), run_id=row["id"], release_id=row["release"], source_id=row["source"]))
         present = {r["date"] for r in rows}
         missing = [(date.fromisoformat(start) + timedelta(days=i)).isoformat() for i in range(days)
                    if (date.fromisoformat(start) + timedelta(days=i)).isoformat() not in present]

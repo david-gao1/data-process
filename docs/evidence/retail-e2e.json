@@ -1,0 +1,126 @@
+{
+  "real_public_historical_data": true,
+  "realtime_cdc": false,
+  "home": "/Users/lianggao/Documents/Codex/2026-10-15/task/data-process/.data-process/retail",
+  "attribution": "Chen, D. (2015). Online Retail [Dataset]. UCI Machine Learning Repository. https://doi.org/10.24432/C5BW33.",
+  "license": "CC-BY-4.0",
+  "raw_bytes": 23715478,
+  "release_id": "fc78b14a99795517dfcfc80382456ac1668e6998314495f3a0929bff2ebdba5f",
+  "batches": [
+    {
+      "batch_id": "a54349ab99837d42468d49e2f78dfa92b56b0fdc47745540cbb9423dfc0da331",
+      "month": "2010-12",
+      "snapshot_rows": 541909,
+      "raw_sha256": "f5385cbb54bbebf7196389109c6b0621faab0c304e3702548165e71c84aede8b",
+      "xlsx_sha256": "43465a06f2ccf7c8b5bd2892bc7defb52f97487934fe93b16ae4c3936424676d",
+      "selected_rows": 42481,
+      "quarantined_rows": 273,
+      "quarantine_reasons": {
+        "nonpositive_price": 273
+      },
+      "rounded_lines": 0,
+      "expected_totals": {
+        "gross_sales_pence": 82374614,
+        "refund_pence": 7478912,
+        "sale_lines": 41480,
+        "refund_lines": 728,
+        "net_sales_pence": 74895702
+      },
+      "days": 20
+    },
+    {
+      "batch_id": "e04f936980db5419991d9ae4628904a1360f783f0f598de91aef8aacbea8a294",
+      "month": "2011-01",
+      "snapshot_rows": 541909,
+      "raw_sha256": "f5385cbb54bbebf7196389109c6b0621faab0c304e3702548165e71c84aede8b",
+      "xlsx_sha256": "43465a06f2ccf7c8b5bd2892bc7defb52f97487934fe93b16ae4c3936424676d",
+      "selected_rows": 35147,
+      "quarantined_rows": 140,
+      "quarantine_reasons": {
+        "nonpositive_price": 140
+      },
+      "rounded_lines": 0,
+      "expected_totals": {
+        "gross_sales_pence": 69136456,
+        "refund_pence": 13136430,
+        "sale_lines": 34306,
+        "refund_lines": 701,
+        "net_sales_pence": 56000026
+      },
+      "days": 24
+    }
+  ],
+  "raw_independent_profile": {
+    "rows": 541909,
+    "missing_customer": 135080,
+    "missing_description": 1454,
+    "cancellation": 9288,
+    "negative_quantity": 10624,
+    "zero_price": 2515,
+    "negative_price": 2
+  },
+  "independently_checked_country_days": 231,
+  "run_count": 45,
+  "audit_count": 46,
+  "batch_replay_idempotent": true,
+  "publication_failure_recovery_and_rollback": true,
+  "backup_restore_integrity": {
+    "integrity": "ok",
+    "releases": 1,
+    "sources": 44,
+    "successful_runs": 45
+  },
+  "trend_window": {
+    "start": "2011-01-02",
+    "end": "2011-01-31",
+    "rows": 124,
+    "missing_dates": [
+      "2011-01-02",
+      "2011-01-03",
+      "2011-01-08",
+      "2011-01-15",
+      "2011-01-22",
+      "2011-01-29"
+    ]
+  },
+  "query_sample": [
+    {
+      "business_date": "2011-01-04",
+      "country": "Sweden",
+      "gross_sales_pence": 54756,
+      "refund_pence": 4000,
+      "net_sales_pence": 50756,
+      "sale_lines": 13,
+      "refund_lines": 1,
+      "run_id": "03a5edd6b0114f2a8231b213e7f15018",
+      "release_id": "fc78b14a99795517dfcfc80382456ac1668e6998314495f3a0929bff2ebdba5f",
+      "source_id": "bbc755cf49aa45808720a463d0cfc2dc4e10c21c0d916c5e18f8100c72bad002"
+    },
+    {
+      "business_date": "2011-01-04",
+      "country": "United Kingdom",
+      "gross_sales_pence": 1547852,
+      "refund_pence": 103560,
+      "net_sales_pence": 1444292,
+      "sale_lines": 1143,
+      "refund_lines": 13,
+      "run_id": "03a5edd6b0114f2a8231b213e7f15018",
+      "release_id": "fc78b14a99795517dfcfc80382456ac1668e6998314495f3a0929bff2ebdba5f",
+      "source_id": "bbc755cf49aa45808720a463d0cfc2dc4e10c21c0d916c5e18f8100c72bad002"
+    },
+    {
+      "business_date": "2011-01-05",
+      "country": "Bahrain",
+      "gross_sales_pence": 0,
+      "refund_pence": 20574,
+      "net_sales_pence": -20574,
+      "sale_lines": 0,
+      "refund_lines": 1,
+      "run_id": "a2a7adc42de149f58e194618c823fdad",
+      "release_id": "fc78b14a99795517dfcfc80382456ac1668e6998314495f3a0929bff2ebdba5f",
+      "source_id": "ecec12aa78423c0c8f3ba2c39ac86ab6462733abf0a3f9aa977a1fcd0d5865c5"
+    }
+  ],
+  "external_uploads": 0,
+  "new_network_schedules": 0
+}

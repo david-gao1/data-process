@@ -1,6 +1,6 @@
 # data-process
 
-一个本机可运行、可恢复的受控数据交付闭环：合成事件 → 按业务日期统计三省活跃用户 → 独立质量校验 → 发布 → 最近 30 天趋势查询。
+一个本机可运行、可恢复的受控数据交付平台。已完成两条业务闭环：合成事件的三省活跃用户统计，以及UCI公开真实零售交易的每日国家开票/取消净额。两者都经过独立质量校验、受控发布和正式查询。
 
 Python + DuckDB 1.4.1 + 不可变 Parquet + SQLite 控制状态。定义、release、run、delivery 分离；异步运行、日志、取消、超时、重启核对、同日期幂等替换、审批 CAS、版本回滚和备份恢复均有实际测试。macOS launchd 负责每日触发、worker 保活与每小时健康检查；预先批准的固定版本可自动发布。没有网页或公开服务。
 
@@ -11,10 +11,13 @@ Python + DuckDB 1.4.1 + 不可变 Parquet + SQLite 控制状态。定义、relea
 ./scripts/dp --home .data-process/my-demo trend --end 2026-10-14
 ```
 
-演示目录必须不存在，不覆盖已有数据。已运行的 30 天演示位于 `.data-process/demo`；每日策略演示位于 `.data-process/live`。全部是合成数据，不含真实凭据。状态、日志和数据默认不进 Git，规范、代码、依赖锁和脱敏验收证据进 Git。
+演示目录必须不存在，不覆盖已有数据。已运行的 30 天演示位于 `.data-process/demo`；每日策略演示位于 `.data-process/live`。以上三省目录是合成数据；新增 `.data-process/retail` 保存许可明确的公开真实历史数据，不含连接凭据。状态、日志和数据默认不进 Git，规范、代码、依赖锁和脱敏验收证据进 Git。
 
 | 阅读入口 | 内容 |
 |---|---|
+| [公开零售验收](docs/evidence/retail-acceptance.md) | 真实来源、两个历史批次、45项测试、独立对账 |
+| [零售字典与命令](docs/09-retail-dictionary-runbook.md) | 开票/取消口径、原始版本、数据字典与恢复 |
+| [零售业务契约](docs/08-public-retail-contract.md) | 下载边界、数据质量、隐私裁剪与验收 |
 | [业务契约](docs/01-business-contract.md) | 假设、输入输出、边界、R01–R09 验收 |
 | [System Map](docs/02-system-map.md) | 职责和关键故障机制 |
 | [ADR](docs/adr/001-local-data-product.md) | 官方资料、复用和自研取舍、真实 Iceberg 实验 |
@@ -29,3 +32,13 @@ Python + DuckDB 1.4.1 + 不可变 Parquet + SQLite 控制状态。定义、relea
 范围是单用户、小规模本地数据产品，不能等同真实生产平台上线。MySQL/Hive/StarRocks 连接器、真实源水位与权限、多用户隔离、目标容量/SLA、异地灾难恢复仍需上线前完成。Parquet 不等于 Iceberg；轻量 Iceberg 路线已实际验证并记录迁移条件。本机使用 Python sets 独立核对 distinct 口径，不能宣称大数据量自动 out-of-core。
 
 运行状态：`./scripts/dp --home .data-process/live health --config .data-process/live/daily-policy.json`。本地通知位于状态目录的 `notifications/`；没有外部消息发送。`./scripts/services.sh start|stop|restart|status` 管理项目的用户登录域作业。附带合成策略有截止日期，过期后跳过；真实上线问题见生产接入文档。
+
+
+查询本次已经发布的公开真实历史产品：
+
+```bash
+./scripts/dp --home .data-process/retail trend --end 2011-01-31
+./scripts/dp --home .data-process/retail check
+```
+
+来源：Chen, D. (2015). Online Retail [Dataset]. UCI Machine Learning Repository. https://doi.org/10.24432/C5BW33 ，CC BY 4.0。它是2010–2011静态真实交易快照；2010-12和2011-01是历史批次回放，不能称实时CDC。正式交付只含日国家聚合，不含CustomerID/订单编号/原始记录。公开接入是有限显式命令，没有把现有演示作业改成自动外网下载。

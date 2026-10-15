@@ -24,7 +24,8 @@ def main():
     sub.add_argument("--date", required=True)
     sub.add_argument("--file", required=True)
     sub = subs.add_parser("release")
-    sub.add_argument("--sql", default=str(ROOT / "definitions/daily_active.sql"))
+    sub.add_argument("--product", choices=["daily_active", "retail_daily"], default="daily_active")
+    sub.add_argument("--sql")
     sub = subs.add_parser("submit")
     sub.add_argument("--release", required=True)
     sub.add_argument("--source", required=True)
@@ -66,7 +67,7 @@ def main():
         elif args.command == "demo-source":
             result = demo_csv(args.output, args.date)
         elif args.command == "release":
-            result = {"release_id": p.release(args.sql)}
+            result = {"release_id": p.release(args.sql or ROOT / "definitions" / ("retail_daily.sql" if args.product == "retail_daily" else "daily_active.sql"), args.product)}
         elif args.command == "ready":
             result = {"source_id": p.ready(args.date, args.file)}
         elif args.command == "submit":
