@@ -14,7 +14,7 @@ import zipfile
 
 import openpyxl
 
-from .core import ROOT, digest, durable_write
+from .core import ROOT, ASSET_ROOT, digest, durable_write
 
 OFFICIAL_URL = 'https://archive.ics.uci.edu/static/public/352/online+retail.zip'
 HEADERS = ['InvoiceNo', 'StockCode', 'Description', 'Quantity', 'InvoiceDate', 'UnitPrice', 'CustomerID', 'Country']
@@ -32,7 +32,7 @@ def file_hash(path):
 
 
 def source_spec():
-    return json.loads((ROOT / 'sources/uci-online-retail.json').read_text())
+    return json.loads((ASSET_ROOT / 'sources/uci-online-retail.json').read_text())
 
 
 def transfer_https(url, path, limit):

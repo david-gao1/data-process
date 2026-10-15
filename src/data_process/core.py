@@ -14,6 +14,10 @@ import uuid
 import duckdb
 
 ROOT = Path(os.environ.get("DP_PROJECT_ROOT", Path.cwd())).resolve()
+ASSET_ROOT = Path(__file__).with_name("resources")
+if not ASSET_ROOT.is_dir():
+    ASSET_ROOT = ROOT
+
 TERMINAL = {"SUCCEEDED", "FAILED", "CANCELLED", "TIMED_OUT", "INTERRUPTED"}
 
 
@@ -109,9 +113,12 @@ class Platform:
                 raise ValueError("definition must contain exactly one SELECT statement")
         files = {"definition.sql": Path(definition).read_bytes(),
                  "compute.py": Path(__file__).with_name(calculators[product]).read_bytes(),
-                 "uv.lock": (ROOT / "uv.lock").read_bytes()}
+                 "uv.lock": (ASSET_ROOT / "uv.lock").read_bytes()}
         manifest = {"files": {k: digest(v) for k, v in files.items()},
                     "duckdb": duckdb.__version__, "python": sys.version.split()[0], "contract": 1}
+        build_info = Path(__file__).with_name("_build_info.json")
+        if build_info.exists():
+            manifest["platform_build"] = json.loads(build_info.read_text())
         if product != "daily_active":
             manifest["product"] = product
         encoded = json.dumps(manifest, sort_keys=True)

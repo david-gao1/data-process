@@ -1,0 +1,40 @@
+# Preparation only. First start creates persistent GitLab administrator credentials.
+# Confirm that action and Docker resource allocation before starting.
+services:
+  server:
+    image: gitlab/gitlab-ce:19.4.2-ce.0
+    platform: linux/arm64
+    hostname: gitlab
+    privileged: false
+    restart: "no"
+    cpus: 6
+    mem_limit: 10g
+    shm_size: 256m
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://127.0.0.1:8929'
+        nginx['listen_port'] = 8929
+        nginx['listen_https'] = false
+        puma['worker_processes'] = 0
+        sidekiq['concurrency'] = 5
+    ports:
+      - "127.0.0.1:8929:8929"
+    volumes:
+      - gitlab_config:/etc/gitlab
+      - gitlab_logs:/var/log/gitlab
+      - gitlab_data:/var/opt/gitlab
+    networks:
+      isolated:
+        aliases: [gitlab]
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "--max-time", "10", "http://127.0.0.1:8929/-/readiness?all=1"]
+      interval: 30s
+      timeout: 15s
+      retries: 20
+      start_period: 180s
+volumes:
+  gitlab_config:
+  gitlab_logs:
+  gitlab_data:
+networks:
+  isolated:

@@ -1,0 +1,61 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.8, pytest-8.4.2, pluggy-1.6.0 -- /Users/lianggao/Documents/Codex/2026-10-15/task/data-process/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/lianggao/Documents/Codex/2026-10-15/task/data-process
+configfile: pyproject.toml
+testpaths: tests
+collecting ... collected 51 items / 1 deselected / 50 selected
+
+tests/test_acceptance.py::test_normal_rerun_version_rollback_and_cas PASSED [  2%]
+tests/test_acceptance.py::test_bad_input_blocks_publication[business_date,user_id,province\n2026-10-13,u,\u5317\u4eac\n] PASSED [  4%]
+tests/test_acceptance.py::test_bad_input_blocks_publication[business_date,user_id,province\n2026-10-14,,\u5317\u4eac\n] PASSED [  6%]
+tests/test_acceptance.py::test_bad_input_blocks_publication[business_date,user_id,province\n2026-10-14,u,\u706b\u661f\n] PASSED [  8%]
+tests/test_acceptance.py::test_bad_input_blocks_publication[business_date,user_id,province\n2026-10-14,u,\u5317\u4eac\n] PASSED [ 10%]
+tests/test_acceptance.py::test_bad_input_blocks_publication[wrong,columns\na,b\n] PASSED [ 12%]
+tests/test_acceptance.py::test_not_ready_invalid_dates_and_numbers PASSED [ 14%]
+tests/test_acceptance.py::test_quality_catches_wrong_sql PASSED          [ 16%]
+tests/test_acceptance.py::test_cancel_queued_and_running_and_timeout PASSED [ 18%]
+tests/test_acceptance.py::test_sigkill_restart_reconciles_and_preserves_queue PASSED [ 20%]
+tests/test_acceptance.py::test_single_worker_lock_and_graceful_stop PASSED [ 22%]
+tests/test_acceptance.py::test_tamper_detected_at_source_release_delivery PASSED [ 24%]
+tests/test_acceptance.py::test_backup_restore_and_history PASSED         [ 26%]
+tests/test_acceptance.py::test_concurrent_idempotent_submit_and_publication PASSED [ 28%]
+tests/test_acceptance.py::test_30_day_window_and_missing_not_zero PASSED [ 30%]
+tests/test_acceptance.py::test_daily_automatic_policy_and_replay PASSED  [ 32%]
+tests/test_ci_delivery.py::test_rules_and_artifact_boundary PASSED       [ 34%]
+tests/test_ci_delivery.py::test_duplicate_yaml_key_is_not_silently_accepted PASSED [ 36%]
+tests/test_ci_delivery.py::test_installed_defaults_work_outside_checkout PASSED [ 38%]
+tests/test_ci_delivery.py::test_fixed_installed_smoke_uses_no_checkout_or_network PASSED [ 40%]
+tests/test_ci_delivery.py::test_builder_rejects_false_ci_commit_without_writing_artifact PASSED [ 42%]
+tests/test_public_retail.py::test_bounded_fetch_hash_cache_and_no_retry PASSED [ 44%]
+tests/test_public_retail.py::test_network_bad_hash_size_source_and_archive_fail_closed PASSED [ 46%]
+tests/test_public_retail.py::test_transfer_enforces_actual_stream_limit_and_terminates_child PASSED [ 48%]
+tests/test_public_retail.py::test_missing_columns_and_excessive_anomalies_do_not_mark_ready PASSED [ 50%]
+tests/test_public_retail.py::test_exact_money_cancellation_and_missing_optional_fields PASSED [ 52%]
+tests/test_public_retail.py::test_two_batches_idempotence_publish_failure_restore_and_private_schema PASSED [ 54%]
+tests/test_public_retail.py::test_broken_workbook_and_unexpected_members_are_rejected PASSED [ 56%]
+tests/test_review.py::test_cancel_at_commit_and_late_success_cannot_resurrect PASSED [ 58%]
+tests/test_review.py::test_interrupted_cannot_accept_late_completion PASSED [ 60%]
+tests/test_review.py::test_select_boundary_and_external_access PASSED    [ 62%]
+tests/test_review.py::test_manifest_file_tamper_and_child_environment PASSED [ 64%]
+tests/test_review.py::test_strict_config_validation[change0] PASSED      [ 66%]
+tests/test_review.py::test_strict_config_validation[change1] PASSED      [ 68%]
+tests/test_review.py::test_strict_config_validation[change2] PASSED      [ 70%]
+tests/test_review.py::test_strict_config_validation[change3] PASSED      [ 72%]
+tests/test_review.py::test_strict_config_validation[change4] PASSED      [ 74%]
+tests/test_review.py::test_strict_config_validation[change5] PASSED      [ 76%]
+tests/test_review.py::test_strict_config_validation[change6] PASSED      [ 78%]
+tests/test_review.py::test_strict_config_validation[change7] PASSED      [ 80%]
+tests/test_review.py::test_strict_config_validation[change8] PASSED      [ 82%]
+tests/test_review.py::test_strict_config_validation[change9] PASSED      [ 84%]
+tests/test_review.py::test_missing_ready_and_overdue_local_notifications_are_deduplicated PASSED [ 86%]
+tests/test_review.py::test_notification_delivery_recovers_after_disk_write_failure PASSED [ 88%]
+tests/test_review.py::test_expired_demo_policy_skips_future_input_without_failure_alert PASSED [ 90%]
+tests/test_review.py::test_heartbeat_and_stale_owner_cannot_clobber_restarted_worker PASSED [ 92%]
+tests/test_review.py::test_concurrent_daily_triggers_share_run_and_delivery PASSED [ 94%]
+tests/test_review.py::test_delivery_and_audit_are_one_transaction_on_injected_failure PASSED [ 96%]
+tests/test_review.py::test_backup_preserves_queued_and_cancelled_without_reexecuting PASSED [ 98%]
+tests/test_review.py::test_cli_respects_disabled_local_alerts_on_missing_input PASSED [100%]
+
+- generated xml file: /Users/lianggao/Documents/Codex/2026-10-15/task/data-process/.ci-reports/junit.xml -
+======================= 50 passed, 1 deselected in 6.72s =======================

@@ -7,7 +7,7 @@ import sys
 import time
 import duckdb
 
-from .core import Platform, ROOT, TERMINAL, demo_csv
+from .core import Platform, ROOT, ASSET_ROOT, TERMINAL, demo_csv
 from .worker import worker
 from .operations import health, monitor, validate_policy
 
@@ -67,7 +67,7 @@ def main():
         elif args.command == "demo-source":
             result = demo_csv(args.output, args.date)
         elif args.command == "release":
-            result = {"release_id": p.release(args.sql or ROOT / "definitions" / ("retail_daily.sql" if args.product == "retail_daily" else "daily_active.sql"), args.product)}
+            result = {"release_id": p.release(args.sql or ASSET_ROOT / "definitions" / ("retail_daily.sql" if args.product == "retail_daily" else "daily_active.sql"), args.product)}
         elif args.command == "ready":
             result = {"source_id": p.ready(args.date, args.file)}
         elif args.command == "submit":

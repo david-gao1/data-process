@@ -1,0 +1,8 @@
+{
+  "offline_yaml_and_rules": "passed",
+  "workflow_cases": 7,
+  "manual_public_cases": 5,
+  "artifact_allowlist": "passed",
+  "gitlab_server_ci_lint": false,
+  "runner_execution": false
+}

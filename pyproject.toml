@@ -1,5 +1,5 @@
 [build-system]
-requires = ["hatchling>=1.26,<2"]
+requires = ["hatchling==1.32.4"]
 build-backend = "hatchling.build"
 
 [project]
@@ -10,10 +10,23 @@ requires-python = ">=3.10,<3.13"
 dependencies = ["duckdb==1.4.1", "openpyxl==3.1.5"]
 
 [project.optional-dependencies]
-dev = ["pytest==8.4.2"]
+dev = ["pytest==8.4.2", "PyYAML==6.0.3"]
 
 [project.scripts]
 dp = "data_process.cli:main"
+dp-smoke = "data_process.smoke:main"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+markers = ["macos: macOS-specific launchd configuration checks; excluded from Linux core CI"]
+
+[dependency-groups]
+build = ["hatchling==1.32.4"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/data_process"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"definitions" = "data_process/resources/definitions"
+"sources/uci-online-retail.json" = "data_process/resources/sources/uci-online-retail.json"
+"uv.lock" = "data_process/resources/uv.lock"

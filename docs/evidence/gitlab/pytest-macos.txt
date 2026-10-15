@@ -1,0 +1,11 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.8, pytest-8.4.2, pluggy-1.6.0 -- /Users/lianggao/Documents/Codex/2026-10-15/task/data-process/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/lianggao/Documents/Codex/2026-10-15/task/data-process
+configfile: pyproject.toml
+testpaths: tests
+collecting ... collected 51 items / 50 deselected / 1 selected
+
+tests/test_macos_configuration.py::test_launchd_plists_are_valid_and_have_bounded_roles PASSED [100%]
+
+======================= 1 passed, 50 deselected in 0.22s =======================

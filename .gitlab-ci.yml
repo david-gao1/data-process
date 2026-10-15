@@ -1,0 +1,94 @@
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH'
+    - if: '$CI_PIPELINE_SOURCE == "web" && $CI_COMMIT_BRANCH'
+    - when: never
+
+stages: [test, build, verify, public_data]
+
+variables:
+  UV_CACHE_DIR: "$CI_PROJECT_DIR/.cache/uv"
+  DP_RUNNER_TAG: "linux-docker"
+  RUN_PUBLIC_RETAIL: "0"
+
+# GitLab Server stores/co-ordinates; a separate non-privileged Docker Runner executes.
+default:
+  image: python:3.11.17-slim-bookworm
+  tags: ["$DP_RUNNER_TAG"]
+  interruptible: true
+  timeout: 10m
+  retry: 0
+  before_script:
+    - sh .ci/bootstrap.sh
+  cache:
+    key:
+      files: [uv.lock]
+      prefix: uv-python-3.11.17
+    paths: [.cache/uv/]
+
+core_test:
+  stage: test
+  script:
+    - .venv/bin/python .ci/check_config.py
+    - .venv/bin/python -m pytest -m 'not macos' --junitxml=.ci-reports/junit.xml -v
+    - .venv/bin/python -I -m data_process.smoke --output .ci-reports/source-smoke.json
+  artifacts:
+    when: always
+    access: developer
+    expire_in: 7 days
+    reports:
+      junit: .ci-reports/junit.xml
+    paths:
+      - .ci-reports/junit.xml
+      - .ci-reports/source-smoke.json
+
+build_wheel:
+  stage: build
+  needs:
+    - job: core_test
+      artifacts: false
+  script:
+    - .venv/bin/python .ci/build_wheel.py
+  artifacts:
+    access: developer
+    expire_in: 14 days
+    paths: [dist/*.whl, dist/manifest.json, dist/runtime-requirements.txt]
+
+installed_wheel:
+  stage: verify
+  needs:
+    - job: build_wheel
+      artifacts: true
+  script:
+    - sh .ci/installed_smoke.sh
+  artifacts:
+    when: always
+    access: developer
+    expire_in: 7 days
+    paths: [.ci-reports/installed-smoke.json]
+
+public_retail_manual:
+  stage: public_data
+  timeout: 20m
+  needs:
+    - job: installed_wheel
+      artifacts: false
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $RUN_PUBLIC_RETAIL == "1"'
+      when: manual
+      allow_failure: true
+    - when: never
+  script:
+    - apt-get update -qq
+    - apt-get install -y --no-install-recommends curl ca-certificates
+    - sh .ci/public_replay.sh
+  after_script:
+    - rm -rf .ci-state/public-retail .ci-state/public-retail-backup .ci-state/public-result.json .ci-state/public-download.json .ci-state/public-error.log
+  artifacts:
+    when: always
+    access: developer
+    expire_in: 3 days
+    paths: [.ci-reports/public-status.json]

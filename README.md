@@ -42,3 +42,5 @@ Python + DuckDB 1.4.1 + 不可变 Parquet + SQLite 控制状态。定义、relea
 ```
 
 来源：Chen, D. (2015). Online Retail [Dataset]. UCI Machine Learning Repository. https://doi.org/10.24432/C5BW33 ，CC BY 4.0。它是2010–2011静态真实交易快照；2010-12和2011-01是历史批次回放，不能称实时CDC。正式交付只含日国家聚合，不含CustomerID/订单编号/原始记录。公开接入是有限显式命令，没有把现有演示作业改成自动外网下载。
+
+GitLab准备：新增[CI/CD手册](docs/10-gitlab-ci-runbook.md)与[此Mac自建准备](infra/gitlab/README.md)。默认CI仅离线核心测试、固定小样本闭环、commit绑定wheel及独立安装验证；UCI网络回放必须显式手动选择。当前尚未执行GitLab服务端CI或注册Runner，未推送本轮配置；本地YAML检查不是GitLab CI Lint。
