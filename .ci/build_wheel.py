@@ -35,7 +35,7 @@ def main():
     version = f'{base}+g{commit}'
     info = {'commit_sha':commit,'version':version,'runtime_lock_sha256':sha(ROOT/'uv.lock')}
     with tempfile.TemporaryDirectory(prefix='dp-wheel-source-') as directory:
-        stage=Path(directory)
+        stage=Path(directory).resolve()
         tracked=subprocess.check_output(['git','ls-tree','-r','--name-only','-z',commit,'--',
                                          'src/data_process','definitions','sources','pyproject.toml','uv.lock'],cwd=ROOT).decode().split('\0')
         for name in filter(None,tracked):
