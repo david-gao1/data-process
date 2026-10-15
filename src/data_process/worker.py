@@ -6,8 +6,10 @@ import signal
 import subprocess
 import sys
 import time
+import uuid
 
 from .core import Platform, digest, durable_write
+from .operations import heartbeat, emit_alert, flush_alerts, validate_policy
 
 
 def stop_process(process):
@@ -20,8 +22,20 @@ def stop_process(process):
             process.wait()
 
 
-def worker(platform: Platform, once=False):
+def worker(platform: Platform, once=False, policy=None):
+    platform.init()
+    if policy is not None:
+        validate_policy(platform, policy)
     stopping = False
+    owner = uuid.uuid4().hex
+    owns_lock = False
+    last_heartbeat = 0
+
+    def tick():
+        nonlocal last_heartbeat
+        if time.monotonic() - last_heartbeat >= 1:
+            heartbeat(platform, owner)
+            last_heartbeat = time.monotonic()
 
     def stop(_signal, _frame):
         nonlocal stopping
@@ -34,10 +48,14 @@ def worker(platform: Platform, once=False):
                 fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
             except BlockingIOError:
                 raise ValueError("another worker or its surviving child holds the lock")
+            owns_lock = True
+            tick()
+            flush_alerts(platform)
             with platform.db(True) as con:
                 con.execute("UPDATE runs SET state=CASE WHEN state='CANCELLING' THEN 'CANCELLED' ELSE 'INTERRUPTED' END, ended=CURRENT_TIMESTAMP, message='worker restart reconciliation; no automatic retry' WHERE state IN ('RUNNING','CANCELLING')")
             print("worker ready; restart reconciliation complete", flush=True)
             while not stopping:
+                tick()
                 with platform.db(True) as con:
                     row = con.execute("SELECT * FROM runs WHERE state='QUEUED' ORDER BY created,rowid LIMIT 1").fetchone()
                     if row:
@@ -68,6 +86,7 @@ def worker(platform: Platform, once=False):
                                                    stdout=log, stderr=subprocess.STDOUT, env=env,
                                                    pass_fds=(lock.fileno(),), cwd=output.parent)
                         while True:
+                            tick()
                             if stopping:
                                 state, message = "INTERRUPTED", "worker stopped; explicit rerun required"
                                 stop_process(process)
@@ -97,16 +116,14 @@ def worker(platform: Platform, once=False):
                 finally:
                     if process is not None:
                         stop_process(process)
-                    with platform.db(True) as con:
-                        # Cancellation races with child completion must never create success.
-                        current = con.execute("SELECT state FROM runs WHERE id=?", (row["id"],)).fetchone()[0]
-                        if current == "CANCELLING":
-                            state, message = "CANCELLED", "cancel request observed before completion commit"
-                        con.execute("UPDATE runs SET state=?,message=?,ended=CURRENT_TIMESTAMP,output_hash=?,report_hash=? WHERE id=?",
-                                    (state, message, output_hash, report_hash, row["id"]))
+                    state = platform.finish_run(row["id"], state, message, output_hash, report_hash)
+                    if state != "SUCCEEDED":
+                        emit_alert(platform, "run_failed", row["id"], state, policy)
                     print(json.dumps({"run": row["id"], "state": state, "message": message}), flush=True)
                 if once:
                     return
     finally:
+        if owns_lock:
+            heartbeat(platform, owner, "stopped")
         for sig, handler in previous.items():
             signal.signal(sig, handler)

@@ -2,7 +2,7 @@
 
 一个本机可运行、可恢复的受控数据交付闭环：合成事件 → 按业务日期统计三省活跃用户 → 独立质量校验 → 发布 → 最近 30 天趋势查询。
 
-Python + DuckDB 1.4.1 + 不可变 Parquet + SQLite 控制状态。定义、release、run、delivery 分离；异步运行、日志、取消、超时、重启核对、同日期幂等替换、审批 CAS、版本回滚和备份恢复均有实际测试。macOS launchd 负责每日触发及 worker 保活；预先批准的固定版本可自动发布。没有网页或公开服务。
+Python + DuckDB 1.4.1 + 不可变 Parquet + SQLite 控制状态。定义、release、run、delivery 分离；异步运行、日志、取消、超时、重启核对、同日期幂等替换、审批 CAS、版本回滚和备份恢复均有实际测试。macOS launchd 负责每日触发、worker 保活与每小时健康检查；预先批准的固定版本可自动发布。没有网页或公开服务。
 
 ```bash
 ./scripts/setup.sh
@@ -21,7 +21,11 @@ Python + DuckDB 1.4.1 + 不可变 Parquet + SQLite 控制状态。定义、relea
 | [追溯表](docs/03-traceability.md) | 需求到代码、测试、证据 |
 | [运行手册](docs/04-runbook.md) | 部署、定时、恢复、回滚、权限和生产缺口 |
 | [验收报告](docs/evidence/acceptance.md) | 实际环境、命令、结果和未覆盖项 |
+| [质量审查](docs/07-quality-review.md) | 38项回归、竞态修复、健康与本地告警 |
+| [生产接入问题](docs/06-production-handoff.md) | 必须提供的真实环境与业务信息 |
 | [实施日志](docs/05-implementation-log.md) | 决策变化、失败和修复 |
 | [Iceberg 对照实验](experiments/iceberg/README.md) | 无 Spark/Docker 的真实快照验证 |
 
 范围是单用户、小规模本地数据产品，不能等同真实生产平台上线。MySQL/Hive/StarRocks 连接器、真实源水位与权限、多用户隔离、目标容量/SLA、异地灾难恢复仍需上线前完成。Parquet 不等于 Iceberg；轻量 Iceberg 路线已实际验证并记录迁移条件。本机使用 Python sets 独立核对 distinct 口径，不能宣称大数据量自动 out-of-core。
+
+运行状态：`./scripts/dp --home .data-process/live health --config .data-process/live/daily-policy.json`。本地通知位于状态目录的 `notifications/`；没有外部消息发送。`./scripts/services.sh start|stop|restart|status` 管理项目的用户登录域作业。附带合成策略有截止日期，过期后跳过；真实上线问题见生产接入文档。

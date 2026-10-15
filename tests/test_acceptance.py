@@ -56,6 +56,14 @@ def await_state(p, run, states, seconds=10):
     pytest.fail(f"state deadline: {p.run(run)}")
 
 
+def await_calculation_started(p, run):
+    deadline = time.monotonic() + 10
+    log = p.artifact(run).parent / "run.log"
+    while not log.exists() or "input contract and readiness passed" not in log.read_text():
+        assert time.monotonic() < deadline, "child did not reach the execution delay"
+        time.sleep(0.02)
+
+
 def approve(p, run, expected=None, rollback=False):
     return p.publish(run, expected, "test-operator", "acceptance review", rollback)
 
@@ -152,6 +160,7 @@ def test_cancel_queued_and_running_and_timeout(product):
     child = launch(p)
     try:
         await_state(p, running, {"RUNNING"})
+        await_calculation_started(p, running)
         p.cancel(running)
         out, _ = child.communicate(timeout=10)
         assert child.returncode == 0, out
@@ -175,11 +184,9 @@ def test_sigkill_restart_reconciles_and_preserves_queue(product):
     child = launch(p, once=False)
     try:
         await_state(p, interrupted, {"RUNNING"})
-        # Wait for child start / candidate creation, then kill actual supervisor.
-        deadline = time.monotonic() + 5
-        while not (p.artifact(interrupted).parent / "run.log").exists():
-            assert time.monotonic() < deadline
-            time.sleep(0.02)
+        # Kill only after the real child has logged readiness and entered its 10s delay.
+        await_calculation_started(p, interrupted)
+        recovery_started = time.monotonic()
         child.kill()
         child.communicate(timeout=10)
         # Orphan guard releases inherited lock; retry starting a worker, never the run.
@@ -192,6 +199,7 @@ def test_sigkill_restart_reconciles_and_preserves_queue(product):
             assert "holds the lock" in out
             assert time.monotonic() < deadline
             time.sleep(0.1)
+        assert time.monotonic() - recovery_started < 5  # parent guard releases inherited lock before the 10s delay
         assert p.run(interrupted)["state"] == "INTERRUPTED"
         assert p.run(queued)["state"] == "SUCCEEDED"
         assert p.trend(DAY)["rows"] == []

@@ -1,0 +1,15 @@
+{
+  "python": "3.11.8 (main, Feb 25 2024, 03:55:37) [Clang 17.0.6 ]",
+  "duckdb": "1.4.1",
+  "sqlite": "3.45.1",
+  "os": "macOS-27.0.1-arm64-arm-64bit",
+  "installed_source_matches": {
+    "worker.py": true,
+    "__init__.py": true,
+    "core.py": true,
+    "operations.py": true,
+    "cli.py": true,
+    "daily.py": true,
+    "compute.py": true
+  }
+}

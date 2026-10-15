@@ -1,0 +1,93 @@
+gui/501/local.data-process.daily = {
+	active count = 0
+	path = /Users/lianggao/Documents/Codex/2026-10-15/task/data-process/.data-process/launchd/local.data-process.daily.plist
+	type = LaunchAgent
+	state = not running
+
+	program = /Users/lianggao/Documents/Codex/2026-10-15/task/data-process/.venv/bin/python
+	arguments = {
+		/Users/lianggao/Documents/Codex/2026-10-15/task/data-process/.venv/bin/python
+		-m
+		data_process.daily
+		--home
+		/Users/lianggao/Documents/Codex/2026-10-15/task/data-process/.data-process/live
+		--config
+		/Users/lianggao/Documents/Codex/2026-10-15/task/data-process/.data-process/live/daily-policy.json
+	}
+
+	working directory = /Users/lianggao/Documents/Codex/2026-10-15/task/data-process
+
+	stdout path = /Users/lianggao/Documents/Codex/2026-10-15/task/data-process/.data-process/live/launchd-daily.log
+	stderr path = /Users/lianggao/Documents/Codex/2026-10-15/task/data-process/.data-process/live/launchd-daily.error.log
+	inherited environment = {
+		SSH_AUTH_SOCK => /var/run/com.apple.launchd.E6P5MK02nX/Listeners
+	}
+
+	default environment = {
+		PATH => /usr/bin:/bin:/usr/sbin:/sbin
+	}
+
+	environment = {
+		OSLogRateLimit => 64
+		XPC_SERVICE_NAME => local.data-process.daily
+	}
+
+	domain = gui/501 [100020]
+	umask = 77
+	asid = 100020
+	minimum runtime = 10
+	exit timeout = 5
+	runs = 1
+	last exit code = 0
+
+	event triggers = {
+		local.data-process.daily.268435475 => {
+			keepalive = 0
+			service = local.data-process.daily
+			stream = com.apple.launchd.calendarinterval
+			monitor = com.apple.UserEventAgent-Aqua
+			descriptor = {
+				"Minute" => 0
+				"Hour" => 8
+			}
+		}
+	}
+
+	event channels = {
+		"com.apple.launchd.calendarinterval" = {
+			port = 0x112f63
+			active = 0
+			managed = 1
+			reset = 0
+			hide = 0
+			watching = 1
+		}
+	}
+
+	resource coalition = {
+		ID = 3540
+		type = resource
+		state = active
+		active count = 1
+		name = local.data-process.daily
+	}
+
+	jetsam coalition = {
+		ID = 3541
+		type = jetsam
+		state = active
+		active count = 1
+		name = local.data-process.daily
+	}
+
+	spawn type = background (5)
+	jetsam priority = 40
+	jetsam memory limit (active) = (unlimited)
+	jetsam memory limit (inactive) = (unlimited)
+	jetsamproperties category = daemon
+	jetsam thread limit = 32
+	cpumon = default
+	sanitizer flags = 0x0
+
+	properties = inferred program
+}

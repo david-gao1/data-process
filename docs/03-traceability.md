@@ -15,3 +15,14 @@
 | R09 | daily.daily、configure_launchd.py、原生 launchd | test_daily_automatic_policy_and_replay；真实 bootstrap/kickstart + 日历注册，见验收报告 |
 
 总闸门：`./scripts/setup.sh` → `.venv/bin/python -m pytest -v` → `.venv/bin/python scripts/demo.py 新目录` → 真实 launchd 触发 → check/backup/restore。测试与演示不依赖网络或真实数据库。依赖安装首次需网络。测试的故障状态是本地 SQL 子进程事实，不外推到 Spark、Hive 或数据库远程取消。
+
+## 独立质量审查新增
+
+| ID | 代码与测试 | 新判据 |
+|---|---|---|
+| R05/R06加强 | core.finish_run；test_cancel_at_commit_and_late_success_cannot_resurrect、test_interrupted_cannot_accept_late_completion | 已存在结果文件也不能越过取消或中断终态 |
+| R07加强 | test_delivery_and_audit_are_one_transaction_on_injected_failure | SQLite trigger注入审计失败，指针和审计都回滚 |
+| R09加强 | test_concurrent_daily_triggers_share_run_and_delivery | 同时触发一个daily run/一个发布，无虚假失败告警 |
+| R08加强 | test_backup_preserves_queued_and_cancelled_without_reexecuting | 备份还原保留队列和取消，原目录不变 |
+| R10 | operations、CLI health/monitor/config-check、launchd monitor | 严格配置、心跳、截止检查、缺ready可见、到期跳过、事务本地通知去重/恢复；tests/test_review.py和scripts/verify_operations.py |
+| R11 | core.release/verify_release、worker最小环境 | 单SELECT、阻止外部读取、manifest篡改拒绝，云/数据库测试凭据不传子进程 |

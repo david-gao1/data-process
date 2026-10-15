@@ -5,9 +5,11 @@ from pathlib import Path
 import sqlite3
 import sys
 import time
+import duckdb
 
 from .core import Platform, ROOT, TERMINAL, demo_csv
 from .worker import worker
+from .operations import health, monitor, validate_policy
 
 
 def main():
@@ -31,6 +33,7 @@ def main():
     sub.add_argument("--key")
     sub.add_argument("--test-delay", type=float, default=0, help="fault injection seconds, recorded in run")
     sub = subs.add_parser("worker")
+    sub.add_argument("--policy", help="validated daily policy, including local alert settings")
     sub.add_argument("--once", action="store_true", help="reconcile then process at most one queued run")
     subs.add_parser("runs")
     for command in ("status", "logs", "cancel", "inspect", "wait"):
@@ -49,6 +52,10 @@ def main():
     sub.add_argument("--days", type=int, default=30)
     subs.add_parser("audit")
     subs.add_parser("check")
+    subs.add_parser("notifications")
+    for command in ("health", "monitor", "config-check"):
+        sub = subs.add_parser(command)
+        sub.add_argument("--config", required=command != "health")
     sub = subs.add_parser("backup")
     sub.add_argument("destination")
     args = parser.parse_args()
@@ -65,7 +72,8 @@ def main():
         elif args.command == "submit":
             result = {"run_id": p.submit(args.release, args.source, args.date, args.timeout, args.test_delay, args.key)}
         elif args.command == "worker":
-            worker(p, args.once)
+            policy = json.loads(Path(args.policy).read_text()) if args.policy else None
+            worker(p, args.once, policy)
             return
         elif args.command == "runs":
             result = p.runs()
@@ -99,12 +107,24 @@ def main():
             result = p.audit()
         elif args.command == "check":
             result = p.check()
+        elif args.command == "notifications":
+            with p.db() as con:
+                result = [dict(r) for r in con.execute("SELECT * FROM notifications ORDER BY rowid")]
+        elif args.command in ("health", "monitor", "config-check"):
+            config = json.loads(Path(args.config).read_text()) if args.config else None
+            if args.command == "config-check":
+                validate_policy(p, config)
+                result = {"configuration": "valid", "release_id": config["release_id"]}
+            else:
+                result = monitor(p, config) if args.command == "monitor" else health(p, config)
         elif args.command == "backup":
             result = p.backup(args.destination)
         print(json.dumps(result, ensure_ascii=False, indent=2))
+        if args.command in ("health", "monitor") and not result["healthy"]:
+            sys.exit(1)
         if args.command == "wait" and result["state"] != "SUCCEEDED":
             sys.exit(1)
-    except (ValueError, OSError, sqlite3.Error, KeyError) as exc:
+    except (ValueError, OSError, sqlite3.Error, KeyError, duckdb.Error) as exc:
         print(json.dumps({"error": str(exc)}, ensure_ascii=False), file=sys.stderr)
         sys.exit(2)
 

@@ -24,3 +24,6 @@ worker 子进程继承锁文件描述符，父进程被 SIGKILL 后，仍存活�
 查询从只读 SQLite 一次取正式指针，验证每份 Parquet 摘要后用 DuckDB 读取，不 glob 候选目录。磁盘丢失时拒绝读取，不能依靠元数据事务恢复丢失文件。
 
 关键深度问题：跨文件与目录数据库不具备全局事务，采用不可变文件 + 原子元数据指针；复用 SQLite 的原子提交，不实现自制事务。发布 CAS、状态门禁和摘要是本项目业务职责。多机、共享湖表、并发跨引擎写入出现时引入 Iceberg catalog；复杂编排出现时接入 Prefect/Dagster 并删除本地运行队列。
+
+
+独立审查后：终态写入统一由core.finish_run执行，只有RUNNING/CANCELLING可完成，取消先提交时强制CANCELLED，已中断或已取消的run不接受迟到成功。operations负责worker心跳、策略校验和本地通知outbox；launchd每小时monitor检查UTC昨日交付截止与worker活性。通知内容不包含SQL/源数据/环境变量，失败落盘保留pending以便重放。

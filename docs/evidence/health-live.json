@@ -1,0 +1,23 @@
+{
+  "healthy": true,
+  "worker": {
+    "alive": true,
+    "heartbeat_age_seconds": 0.680793046951294,
+    "status": "running"
+  },
+  "run_counts": {
+    "SUCCEEDED": 1
+  },
+  "oldest_queue_age_seconds": null,
+  "overdue_runs": [],
+  "pending_notifications": 0,
+  "delivery": {
+    "expected_date": "2026-10-14",
+    "state": "delivered",
+    "ready_files_present": true,
+    "last_attempt": {
+      "run_id": "8742da569c3d452f97f9a6cdde7fc80e",
+      "state": "already_delivered"
+    }
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "synthetic": true,
+  "home": "/Users/lianggao/Documents/Codex/2026-10-15/task/data-process/.data-process/review-demo",
+  "release_id": "07bdd3d578ecbe17474994b866b960d90f944da3fa0d042058d10e0ebee4b48b",
+  "days": 30,
+  "rows": 90,
+  "integrity": {
+    "integrity": "ok",
+    "releases": 1,
+    "sources": 30,
+    "successful_runs": 30
+  },
+  "last_run": "aaa6edf2a1294e528dc725eef59c1b1e",
+  "last_day": [
+    {
+      "business_date": "2026-10-14",
+      "province": "上海",
+      "active_users": 4,
+      "run_id": "aaa6edf2a1294e528dc725eef59c1b1e",
+      "release_id": "07bdd3d578ecbe17474994b866b960d90f944da3fa0d042058d10e0ebee4b48b",
+      "source_id": "74b51d0c5e2bd8eb6971aa3c3f0dabb1deeece6935d5372dd7ed9f5c99b527cc"
+    },
+    {
+      "business_date": "2026-10-14",
+      "province": "北京",
+      "active_users": 3,
+      "run_id": "aaa6edf2a1294e528dc725eef59c1b1e",
+      "release_id": "07bdd3d578ecbe17474994b866b960d90f944da3fa0d042058d10e0ebee4b48b",
+      "source_id": "74b51d0c5e2bd8eb6971aa3c3f0dabb1deeece6935d5372dd7ed9f5c99b527cc"
+    },
+    {
+      "business_date": "2026-10-14",
+      "province": "广东",
+      "active_users": 5,
+      "run_id": "aaa6edf2a1294e528dc725eef59c1b1e",
+      "release_id": "07bdd3d578ecbe17474994b866b960d90f944da3fa0d042058d10e0ebee4b48b",
+      "source_id": "74b51d0c5e2bd8eb6971aa3c3f0dabb1deeece6935d5372dd7ed9f5c99b527cc"
+    }
+  ]
+}

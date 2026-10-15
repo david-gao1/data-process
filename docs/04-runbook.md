@@ -33,11 +33,11 @@ setup 使用 uv.lock（含包 hash）与普通安装；本机可编辑 `.pth` �
 ./scripts/dp trend --end 2026-10-14
 ```
 
-首次发布 `--expected NONE`，替换必须提供当前 run，避免并发审批覆盖；重复同一发布且 expected 为自身时不新增审计。操作员纠正输入应重新 ready 创建新 source，重新 submit 得新 run。相同 key 与参数返回同一实例，不能用同一 key 改参数。
+首次发布 `--expected NONE`，替换必须提供当前 run，避免并发审批覆盖；当前指针已是目标run时幂等返回，不新增审计或覆盖数据。操作员纠正输入应重新 ready 创建新 source，重新 submit 得新 run。相同 key 与参数返回同一实例，不能用同一 key 改参数。
 
 ## 每日自动交付
 
-两个项目内 LaunchAgent plist：worker 由 launchd KeepAlive；daily 每天系统本地时间 08:00 执行一次，业务日期始终取 UTC 昨日。此时间是演示默认值，可改生成脚本；它不是经业务签字的 SLA。系统本地时区应在部署时核实；睡眠、退出登录、停机可能延迟或漏跑，不承诺补齐所有历史日期。
+三个项目内 LaunchAgent plist（独立审查后加入monitor）：worker 由 launchd KeepAlive；daily 每天系统本地时间 08:00 执行一次，业务日期始终取 UTC 昨日。此时间是演示默认值，可改生成脚本；它不是经业务签字的 SLA。系统本地时区应在部署时核实；睡眠、退出登录、停机可能延迟或漏跑，不承诺补齐所有历史日期。
 
 daily policy 固定 `release_id`、`inbox`、actor、timeout，必须显式 `auto_publish: true`。上游将 `YYYY-MM-DD.csv` 完整导出后，原子落盘同名 `.ready`，内容为该 CSV 的 SHA256；不得先 ready 后改数据。daily 验证摘要，固定快照，提交持久 run，等待 worker 校验，仅在成功后按批准策略自动发布并记审计。缺输入、错误 ready、失败/取消/超时、冲突均退出非零；不自动重试。幂等重放不会新增交付，已经被人工替换的旧任务不会覆盖人工结果。
 
@@ -93,3 +93,48 @@ backup 持有 worker 锁与 SQLite 写事务，排除并发运行与控制写入
 home 0700，umask 077，CLI 不存云凭据，计算子进程不继承云/数据库环境变量，SQL 读取快照后关闭外部访问。所有操作是同一个可信 OS 用户，actor 是审计标签，不是认证；正式查询以只读 SQLite 打开，但相同用户可改底层文件。真实多人使用必须用独立服务账号和只读消费身份、认证授权与独立发布审批，不能把命令参数当 RBAC。
 
 上线前路径：实现 MySQL/Hive/StarRocks 只读导出及源水位校验 → 业务口径/时区/零活跃/迟到数据签字 → 安全账号/凭据托管 → 目标环境容量与故障测试 → SLA/告警/值守 → 异地恢复演练。需要多引擎共享表时迁移 Iceberg catalog 和持久对象存储；需要 DAG/自动重试时接入现成编排器并撤掉本地队列。不得将本机演示通过描述为真实生产验收完成。
+
+## 独立审查后新增：配置、健康和本地告警
+
+更新源码后运行 setup，并重新加载 worker；worker 启动自动幂等建立 operational_status 和 notifications 表，兼容旧home。更换固定版本需要显式准备并审核策略，不会覆盖旧 release。
+
+```bash
+./scripts/dp --home .data-process/live config-check --config .data-process/live/daily-policy.json
+./scripts/dp --home .data-process/live health --config .data-process/live/daily-policy.json
+./scripts/dp --home .data-process/live monitor --config .data-process/live/daily-policy.json
+./scripts/dp --home .data-process/live notifications
+.venv/bin/python scripts/verify_operations.py .data-process/new-ops-proof
+```
+
+health 显示worker心跳（10秒阈值）、状态计数、最老队列年龄、超过timeout+5秒仍非终态的run、待投递告警和UTC昨日交付状态；不健康退出1。check 检查数据完整性，health 检查运行活性，两者都要看。
+
+policy 允许字段：auto_publish、release_id、inbox、actor、timeout、enabled、through_date、deadline_utc_hour、alerts，未知字段或错误类型拒绝。inbox 必须是已存在的绝对路径。默认deadline UTC08:00仅是可配置参考，需业务确认。`enabled:false` 停用每日业务处理；`through_date` 为最后允许业务日期。附带 prepare_demo_policy 只生成截至UTC昨日的合成策略，明天起daily成功返回 disabled_or_expired，不反复报缺输入。要持续生产，需要真实上游或显式更新演示期，不自动造数。
+
+alerts 示例：`{"sink":"local","enabled":true,"events":["run_failed","daily_failed","delivery_overdue","worker_unhealthy"]}`。仅支持local，不接受webhook/命令字符串。worker 使用 `--policy` 加载相同配置；不带策略时默认所有本地事件开启。配置无效时发本地配置错误记录，避免配置错误让故障完全不可见。
+
+通知先事务写 notifications outbox，后写 home/notifications/<SHA256>.json，只有成功fsync落盘后标delivered。失败保留待投递，由重启worker或monitor重放。run失败按run去重，daily失败/交付逾期/worker异常各按业务日期去重；重复缺输入、反复monitor不会每次新增文件。内容只有事件、范围、原因码和时间，不包含异常原文、SQL、配置、数据行或凭据。文件是本地可验证通知落点，没有实际发送到人；生产需批准并接入现有监控/值班渠道。
+
+configure_launchd 现在还生成 `local.data-process.monitor.plist`，用户登录域每3600秒执行一次，无KeepAlive重试；daily也无失败自动重试。加载和停用：
+
+```bash
+launchctl bootstrap gui/$(id -u) .data-process/launchd/local.data-process.monitor.plist
+launchctl kickstart gui/$(id -u)/local.data-process.monitor
+launchctl bootout gui/$(id -u)/local.data-process.monitor
+# 完整停用：monitor、daily、worker均bootout；不会删除版本、数据和通知。
+```
+
+当前已加载的三个作业全部在用户gui登录域，plist保留在项目，未增加LaunchDaemon、sudo服务或修改隐私权限数据库。加载与实际退出码证据在docs/evidence。Documents权限是macOS对该Python路径的实际授权前提，之前已处理；新机器须正常授权，不能绕过。
+
+仅SELECT和关闭外部读取降低误用风险，不构成对恶意同OS用户的沙箱；可信作者仍能直接改文件。禁止将连接凭据写入SQL或策略，真实源凭据应来自批准的secret store。输入路径和备份目的地是可信操作员参数，没有对网络暴露任意路径接口。
+
+
+项目级启动/停用与恢复已经实际验证：
+
+```bash
+./scripts/services.sh status
+./scripts/services.sh restart
+./scripts/services.sh stop
+./scripts/services.sh start
+```
+
+脚本只管理 local.data-process.worker/daily/monitor 三个gui作业；restart先验证配置，再停止并重新加载；重复start不会重复注册。停止不删除数据，重新启动会核对中断实例。机器重启后仍需执行start（当前没有写入用户Library或机器LaunchDaemons）。如需无人值守跨登录自动启动，必须在实际目标服务账号和运维规范下安装，不擅自扩大机器权限。

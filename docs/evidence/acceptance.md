@@ -41,3 +41,7 @@ launchd 实时状态见 [worker](launchd-worker.txt)、[daily](launchd-daily.txt
 launchd 的实际日历事件已注册，但没有等待次日08:00；用 kickstart 执行同一命令验证，不虚称已跨日运行。当前登录域重启/退出登录需重新 bootstrap，未来日期没有真实上游 ready 会明确失败。无UI，因此不存在未执行的网页E2E；没有公开网络入口。
 
 本机底线已完成：可重复部署、运行、失败关闭、版本追溯、受控交付和恢复。真实生产必须沿 [运行手册](../04-runbook.md) 完成服务账号、源连接、权限与凭据、数据口径/时区、容量/SLA、告警、备份异地恢复和目标环境演练后才能签署上线。
+
+## 最终质量审查更新
+
+最初16项通过后继续审查，最新总闸门为 [38 passed](pytest-review.txt)，原始16项证据保留为历史。最终代码重复完成 [30天CLI闭环](demo-review.json)。新增缺输入/逾期/失活的 [本地通知演练](operations-proof.json)、[实际health](health-live.json)、用户gui域小时monitor，以及发布/audit故障事务、并发daily、取消/中断迟到完成门禁、凭据/SQL/路径边界的独立验证。完整发现和修复见 [质量审查](../07-quality-review.md)。生产接入缺口依然成立。

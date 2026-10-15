@@ -1,0 +1,18 @@
+{
+  "configuration": "valid",
+  "release_id": "07bdd3d578ecbe17474994b866b960d90f944da3fa0d042058d10e0ebee4b48b"
+}
+/Users/lianggao/Documents/Codex/2026-10-15/task/data-process/.data-process/launchd/local.data-process.worker.plist
+/Users/lianggao/Documents/Codex/2026-10-15/task/data-process/.data-process/launchd/local.data-process.daily.plist
+/Users/lianggao/Documents/Codex/2026-10-15/task/data-process/.data-process/launchd/local.data-process.monitor.plist
+worker
+	state = running
+	pid = 32598
+	last exit code = (never exited)
+daily
+	state = not running
+	last exit code = (never exited)
+monitor
+	state = not running
+	last exit code = (never exited)
+	run interval = 3600 seconds

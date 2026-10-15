@@ -1,0 +1,58 @@
+{
+  "synthetic_clock_utc": "2026-10-15T09:00:00+00:00",
+  "home": "/Users/lianggao/Documents/Codex/2026-10-15/task/data-process/.data-process/ops-proof",
+  "external_messages_sent": 0,
+  "repeated_daily_attempts": 2,
+  "repeated_monitor_attempts": 2,
+  "notification_files": 3,
+  "notifications": [
+    {
+      "code": "expected_business_date_not_published",
+      "created_utc": "2026-10-15T03:40:28.367358+00:00",
+      "event": "delivery_overdue",
+      "id": "817eeddbe753fe998e44c6d6e4d27e4236308e2a6e533a1993f4b6e55eae8ad9",
+      "scope": "2026-10-14"
+    },
+    {
+      "code": "worker_heartbeat_missing_or_stale",
+      "created_utc": "2026-10-15T03:40:28.366367+00:00",
+      "event": "worker_unhealthy",
+      "id": "be9e8603ef47bbb897979810b465bbe3c7f5484029466da8458f10150be3f7a2",
+      "scope": "2026-10-14"
+    },
+    {
+      "code": "input_not_ready",
+      "created_utc": "2026-10-15T03:40:28.363315+00:00",
+      "event": "daily_failed",
+      "id": "dfe418026418f9ebd1ea0e4bafe6b1ca17f4c4d21147493d1d0686010d6a682a",
+      "scope": "2026-10-14"
+    }
+  ],
+  "health": {
+    "healthy": false,
+    "worker": {
+      "alive": false,
+      "heartbeat_age_seconds": null,
+      "status": "unknown"
+    },
+    "run_counts": {},
+    "oldest_queue_age_seconds": null,
+    "overdue_runs": [],
+    "pending_notifications": 0,
+    "delivery": {
+      "expected_date": "2026-10-14",
+      "state": "overdue",
+      "ready_files_present": false,
+      "last_attempt": {
+        "code": "input_not_ready",
+        "state": "failed"
+      }
+    }
+  },
+  "integrity": {
+    "integrity": "ok",
+    "releases": 1,
+    "sources": 0,
+    "successful_runs": 0
+  }
+}

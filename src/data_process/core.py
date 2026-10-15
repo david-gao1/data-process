@@ -54,7 +54,7 @@ class Platform:
     @contextmanager
     def db(self, write=False):
         path = self.home / "control.sqlite"
-        con = sqlite3.connect(f"file:{path}?mode={'rw' if write else 'ro'}", uri=True, timeout=10)
+        con = sqlite3.connect(f"{path.as_uri()}?mode={'rw' if write else 'ro'}", uri=True, timeout=10)
         con.row_factory = sqlite3.Row
         con.execute("PRAGMA foreign_keys=ON")
         con.execute("PRAGMA synchronous=FULL")
@@ -76,6 +76,8 @@ class Platform:
         with sqlite3.connect(self.home / "control.sqlite") as con:
             con.executescript('''
             PRAGMA foreign_keys=ON;
+            CREATE TABLE IF NOT EXISTS operational_status(key TEXT PRIMARY KEY, value TEXT NOT NULL);
+            CREATE TABLE IF NOT EXISTS notifications(id TEXT PRIMARY KEY, payload TEXT NOT NULL, delivered INTEGER NOT NULL);
             CREATE TABLE IF NOT EXISTS releases(id TEXT PRIMARY KEY, manifest TEXT NOT NULL);
             CREATE TABLE IF NOT EXISTS sources(id TEXT PRIMARY KEY, date TEXT NOT NULL, hash TEXT NOT NULL);
             CREATE TABLE IF NOT EXISTS runs(
@@ -93,6 +95,11 @@ class Platform:
         return {"home": str(self.home)}
 
     def release(self, definition):
+        sql = Path(definition).read_text()
+        with duckdb.connect() as con:
+            statements = con.extract_statements(sql)
+            if len(statements) != 1 or statements[0].type != duckdb.StatementType.SELECT:
+                raise ValueError("definition must contain exactly one SELECT statement")
         files = {"definition.sql": Path(definition).read_bytes(),
                  "compute.py": Path(__file__).with_name("compute.py").read_bytes(),
                  "uv.lock": (ROOT / "uv.lock").read_bytes()}
@@ -117,6 +124,8 @@ class Platform:
             raise ValueError("release manifest checksum mismatch")
         manifest = json.loads(encoded)
         directory = self.home / "releases" / release_id
+        if (directory / "manifest.json").read_text() != encoded:
+            raise ValueError("release manifest file checksum mismatch")
         for name, checksum in manifest["files"].items():
             if digest((directory / name).read_bytes()) != checksum:
                 raise ValueError("release checksum mismatch")
@@ -178,6 +187,23 @@ class Platform:
                 con.execute("UPDATE runs SET state='CANCELLING' WHERE id=?", (run_id,))
         return self.run(run_id)
 
+    def finish_run(self, run_id, state, message, output_hash=None, report_hash=None):
+        if state not in TERMINAL:
+            raise ValueError("completion must be terminal")
+        with self.db(True) as con:
+            row = con.execute("SELECT state FROM runs WHERE id=?", (run_id,)).fetchone()
+            if row is None:
+                raise ValueError("run not found")
+            if row[0] not in {"RUNNING", "CANCELLING"}:
+                return row[0]  # A late completion cannot resurrect a fenced terminal run.
+            if row[0] == "CANCELLING":
+                state, message = "CANCELLED", "cancel request observed before completion commit"
+            if state != "SUCCEEDED":
+                output_hash, report_hash = None, None
+            con.execute("UPDATE runs SET state=?,message=?,ended=CURRENT_TIMESTAMP,output_hash=?,report_hash=? WHERE id=?",
+                        (state, message, output_hash, report_hash, run_id))
+        return state
+
     def artifact(self, run_id):
         # Only validated ids from the registry are used to construct paths.
         self.run(run_id)
@@ -204,14 +230,14 @@ class Platform:
         with self.db(True) as con:
             current_row = con.execute("SELECT run FROM deliveries WHERE date=?", (row["date"],)).fetchone()
             current = current_row[0] if current_row else None
+            if current == run_id:
+                return {"run": run_id, "changed": False}
             if current != expected:
                 raise ValueError("publication conflict: expected current run does not match")
             if con.execute("SELECT state FROM runs WHERE id=?", (run_id,)).fetchone()[0] != "SUCCEEDED":
                 raise ValueError("run is no longer successful")
             if rollback and not con.execute("SELECT 1 FROM audit WHERE run=?", (run_id,)).fetchone():
                 raise ValueError("rollback target has never been published")
-            if current == run_id:
-                return {"run": run_id, "changed": False}
             con.execute("INSERT INTO deliveries VALUES (?,?) ON CONFLICT(date) DO UPDATE SET run=excluded.run", (row["date"], run_id))
             con.execute("INSERT INTO audit(date,previous_run,run,action,actor,reason) VALUES (?,?,?,?,?,?)",
                         (row["date"], current, run_id, "rollback" if rollback else "publish", actor, reason))
