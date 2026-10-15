@@ -1,0 +1,19 @@
+[build-system]
+requires = ["hatchling>=1.26,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "data-process"
+version = "0.1.0"
+description = "Local governed daily active-user data product"
+requires-python = ">=3.10,<3.13"
+dependencies = ["duckdb==1.4.1"]
+
+[project.optional-dependencies]
+dev = ["pytest==8.4.2"]
+
+[project.scripts]
+dp = "data_process.cli:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

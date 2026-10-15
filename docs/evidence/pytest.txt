@@ -1,0 +1,26 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.8, pytest-8.4.2, pluggy-1.6.0 -- /Users/lianggao/Documents/Codex/2026-10-15/task/data-process/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/lianggao/Documents/Codex/2026-10-15/task/data-process
+configfile: pyproject.toml
+testpaths: tests
+collecting ... collected 16 items
+
+tests/test_acceptance.py::test_normal_rerun_version_rollback_and_cas PASSED [  6%]
+tests/test_acceptance.py::test_bad_input_blocks_publication[business_date,user_id,province\n2026-10-13,u,\u5317\u4eac\n] PASSED [ 12%]
+tests/test_acceptance.py::test_bad_input_blocks_publication[business_date,user_id,province\n2026-10-14,,\u5317\u4eac\n] PASSED [ 18%]
+tests/test_acceptance.py::test_bad_input_blocks_publication[business_date,user_id,province\n2026-10-14,u,\u706b\u661f\n] PASSED [ 25%]
+tests/test_acceptance.py::test_bad_input_blocks_publication[business_date,user_id,province\n2026-10-14,u,\u5317\u4eac\n] PASSED [ 31%]
+tests/test_acceptance.py::test_bad_input_blocks_publication[wrong,columns\na,b\n] PASSED [ 37%]
+tests/test_acceptance.py::test_not_ready_invalid_dates_and_numbers PASSED [ 43%]
+tests/test_acceptance.py::test_quality_catches_wrong_sql PASSED          [ 50%]
+tests/test_acceptance.py::test_cancel_queued_and_running_and_timeout PASSED [ 56%]
+tests/test_acceptance.py::test_sigkill_restart_reconciles_and_preserves_queue PASSED [ 62%]
+tests/test_acceptance.py::test_single_worker_lock_and_graceful_stop PASSED [ 68%]
+tests/test_acceptance.py::test_tamper_detected_at_source_release_delivery PASSED [ 75%]
+tests/test_acceptance.py::test_backup_restore_and_history PASSED         [ 81%]
+tests/test_acceptance.py::test_concurrent_idempotent_submit_and_publication PASSED [ 87%]
+tests/test_acceptance.py::test_30_day_window_and_missing_not_zero PASSED [ 93%]
+tests/test_acceptance.py::test_daily_automatic_policy_and_replay PASSED  [100%]
+
+============================== 16 passed in 3.89s ==============================

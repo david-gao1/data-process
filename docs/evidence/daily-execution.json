@@ -1,0 +1,9 @@
+{
+  "trigger": "launchctl kickstart (same command as daily calendar)",
+  "run_count": 1,
+  "publication_audit_count": 1,
+  "replay": "already_delivered",
+  "last_exit_code": 0,
+  "run_id": "8742da569c3d452f97f9a6cdde7fc80e",
+  "log": "{\n  \"run_id\": \"8742da569c3d452f97f9a6cdde7fc80e\",\n  \"date\": \"2026-10-14\",\n  \"publication\": {\n    \"run\": \"8742da569c3d452f97f9a6cdde7fc80e\",\n    \"previous\": null,\n    \"changed\": true\n  }\n}\n{\n  \"run_id\": \"8742da569c3d452f97f9a6cdde7fc80e\",\n  \"state\": \"already_delivered\",\n  \"date\": \"2026-10-14\"\n}\n"
+}

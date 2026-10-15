@@ -1,0 +1,5 @@
+#!/bin/sh
+set -eu
+cd "$(dirname "$0")/.."
+export DP_PROJECT_ROOT="$PWD"
+exec .venv/bin/python -m data_process.cli "$@"

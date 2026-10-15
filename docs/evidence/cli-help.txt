@@ -1,0 +1,13 @@
+usage: cli.py [-h] [--home HOME]
+              {init,demo-source,ready,release,submit,worker,runs,status,logs,cancel,inspect,wait,publish,rollback,trend,audit,check,backup}
+              ...
+
+本地受控数据交付；所有数据默认为合成演示
+
+positional arguments:
+  {init,demo-source,ready,release,submit,worker,runs,status,logs,cancel,inspect,wait,publish,rollback,trend,audit,check,backup}
+
+options:
+  -h, --help            show this help message and exit
+  --home HOME           state directory; default DP_HOME or project .data-
+                        process
