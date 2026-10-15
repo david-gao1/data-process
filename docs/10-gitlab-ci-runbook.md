@@ -6,7 +6,7 @@
 
 .gitlab-ci.yml按MR/分支切换，web可手动启动，schedule/API/tag不自动执行。默认image固定python:3.11.17-slim-bookworm；已只读核对官方镜像有amd64与arm64。Runner需Docker executor、tag linux-docker（可由项目变量DP_RUNNER_TAG改为实际tag），建议单并发、2vCPU/2GiB job起步；不需要job privileged、DinD、Docker socket或生产目录挂载。
 
-bootstrap固定uv0.10.9，uv.lock冻结运行/测试/构建依赖，禁自动下载Python，使用镜像既有3.11.17。构建backend及其传递依赖在build组锁定。默认job不读真实源、不调用launchctl、不产生常驻服务。
+bootstrap在slim镜像缺git时从Debian签名软件源安装git（Runner helper完成clone不代表job镜像有git），固定uv0.10.9，uv.lock冻结运行/测试/构建依赖，禁自动下载Python，使用镜像既有3.11.17。构建backend及其传递依赖在build组锁定。默认job不读真实源、不调用launchctl、不产生常驻服务。
 
 | job | 责任 | 交付 |
 |---|---|---|

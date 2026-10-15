@@ -1,0 +1,20 @@
+{
+  "source": "https://hub.docker.com/v2/repositories/gitlab/gitlab-ce/tags/19.4.2-ce.0",
+  "tag": "19.4.2-ce.0",
+  "checked_on": "2026-10-15",
+  "images": [
+    {
+      "os": "linux",
+      "architecture": "amd64",
+      "digest": "sha256:6e840b777526e383e54747cde3dd9146c31424fe85a0c8771af406c84ce0c478",
+      "size": 1515153956
+    },
+    {
+      "os": "linux",
+      "architecture": "arm64",
+      "digest": "sha256:1d72e8769f7c0f417ac5f8a2e2ecff7ccaded3d75072873148ee6b4f384a5742",
+      "size": 1466099953
+    }
+  ],
+  "note": "Read-only registry metadata; image not pulled or executed."
+}
