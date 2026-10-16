@@ -8,6 +8,8 @@
 
 bootstrap在slim镜像缺git时从Debian签名软件源安装git（Runner helper完成clone不代表job镜像有git），固定uv0.10.9，uv.lock冻结运行/测试/构建依赖，禁自动下载Python，使用镜像既有3.11.17。构建backend及其传递依赖在build组锁定。默认job不读真实源、不调用launchctl、不产生常驻服务。
 
+2026-10-16本机Linux冷启动实测网络约77kB/s，单uv下载约5分钟，尚有Debian索引与DuckDB依赖；默认job上限因此由10分钟调整为30分钟，手动真实数据job由20分钟调整为40分钟以包含bootstrap。仍无自动job重试；业务worker自身超时不因此放宽。
+
 | job | 责任 | 交付 |
 |---|---|---|
 | core_test | 离线规则/50个POSIX测试case/JUnit/固定双产品smoke | JUnit与只含验证状态的小报告，7天 |
@@ -30,7 +32,7 @@ UV_CACHE_DIR="$PWD/.cache/uv" .venv/bin/python .ci/build_wheel.py
 DP_PYTHON="$PWD/.venv/bin/python" UV_CACHE_DIR="$PWD/.cache/uv" sh .ci/installed_smoke.sh
 ```
 
-本地Python3.11.8的结果不能当作Linux/Python3.11.17已执行。Docker daemon未运行时不会启动它来冒充Linux验证。macos标记仅检查launchd plist合法性，不启动已有服务；Linux默认明确排除它。已有进程/文件锁/取消/恢复测试是POSIX，仍需目标Linux Runner实际执行确认。
+2026-10-16已在真实Linux aarch64/Python3.11.17容器执行50个核心测试和独立wheel双产品闭环并通过，见[evidence](evidence/gitlab/linux-2026-10-16/README.md)。这是本机容器验证，尚非GitLab Runner流水线或服务端CI Lint。此前Mac Python3.11.8结果另行保留。macos标记仅检查launchd plist合法性，不启动已有服务；Linux默认明确排除它。已有进程/文件锁/取消/恢复测试是POSIX，目标GitLab Runner仍需验证调度、作业环境和artifact传递。
 
 wheel从git对象读取src/data_process、definitions、source registry和锁文件，不复制忽略的本地文件。版本为0.1.0+g<完整commit SHA>，manifest绑定wheel SHA与requirements SHA；安装前对照CI_COMMIT_SHA。包内自带SQL、来源配置与锁文件，离开checkout也可release。数据状态ROOT与包内资源ASSET_ROOT分离，运行目录由--home/DP_HOME显式指定；manifest还记录包的platform_build来源。
 

@@ -19,7 +19,7 @@ default:
   image: python:3.11.17-slim-bookworm
   tags: ["$DP_RUNNER_TAG"]
   interruptible: true
-  timeout: 10m
+  timeout: 30m
   retry: 0
   before_script:
     - sh .ci/bootstrap.sh
@@ -72,7 +72,7 @@ installed_wheel:
 
 public_retail_manual:
   stage: public_data
-  timeout: 20m
+  timeout: 40m
   needs:
     - job: installed_wheel
       artifacts: false

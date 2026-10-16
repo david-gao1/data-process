@@ -1,6 +1,6 @@
 # 此Mac的GitLab安装准备
 
-本机已测：Apple M3 Max arm64、14逻辑核、36GiB物理内存、约338GiB可用盘。官方Docker Hub `gitlab/gitlab-ce:19.4.2-ce.0`同时提供linux/arm64与linux/amd64，元数据见image-platforms.json；此compose固定arm64，不使用不明第三方镜像或默认x86仿真。Docker Desktop 4.37.2已经安装，Gatekeeper返回accepted / Notarized Developer ID。官方CLI执行start --timeout 30后超时，后续status不可用且未发现Docker进程；未发现Docker崩溃报告。当前需要用户在Mac原生界面查看初始化或具体错误；没有证据证明需要sudo。守护进程尚不可用，不重复盲目启动，不修改系统安全设置。
+本机已测：Apple M3 Max arm64、14逻辑核、36GiB物理内存、约338GiB可用盘。官方Docker Hub `gitlab/gitlab-ce:19.4.2-ce.0`同时提供linux/arm64与linux/amd64，元数据见image-platforms.json；此compose固定arm64，不使用不明第三方镜像或默认x86仿真。Docker Desktop 4.37.2已恢复，2026-10-16在沙箱外获准查询daemon27.4.0成功；沙箱内无法连接不能当作daemon停止。Linux aarch64/Python3.11.17的50个核心测试和独立wheel闭环已经通过，证据见docs/evidence/gitlab/linux-2026-10-16。VM仅约8.72GiB，尚不足GitLab10GiB配置及现有容器，等待提高内存/重启和首次管理员凭据初始化的明确确认；GitLab仍未启动。
 
 ## 边界与需要确认的动作
 
