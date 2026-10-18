@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "synthetic": true,
+  "network_used": false,
+  "launchd_used": false,
+  "package_version": "0.1.0",
+  "build": null,
+  "checks": [
+    {
+      "product": "daily_active",
+      "passed": true,
+      "groups_checked": 3,
+      "idempotent": true
+    },
+    {
+      "product": "retail_daily",
+      "passed": true,
+      "groups_checked": 1,
+      "idempotent": true
+    }
+  ]
+}

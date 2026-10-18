@@ -1,0 +1,26 @@
+{
+  "passed": true,
+  "synthetic": true,
+  "network_used": false,
+  "launchd_used": false,
+  "package_version": "0.1.0+g34253a628b0cae7679204cb31109c2645c2ec3f8",
+  "build": {
+    "commit_sha": "34253a628b0cae7679204cb31109c2645c2ec3f8",
+    "runtime_lock_sha256": "52fb6b74b304c2c72b36863ec31817849643d38479279b42932cd443cfee1a2e",
+    "version": "0.1.0+g34253a628b0cae7679204cb31109c2645c2ec3f8"
+  },
+  "checks": [
+    {
+      "product": "daily_active",
+      "passed": true,
+      "groups_checked": 3,
+      "idempotent": true
+    },
+    {
+      "product": "retail_daily",
+      "passed": true,
+      "groups_checked": 1,
+      "idempotent": true
+    }
+  ]
+}

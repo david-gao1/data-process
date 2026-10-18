@@ -1,0 +1,66 @@
+{
+  "pipeline": {
+    "id": 5,
+    "sha": "34253a628b0cae7679204cb31109c2645c2ec3f8",
+    "status": "success",
+    "web_url": "http://127.0.0.1:8929/root/data-process/-/pipelines/5",
+    "ref": "main",
+    "source": "push",
+    "created_at": "2026-10-18T07:45:26.158Z",
+    "finished_at": "2026-10-18T07:46:09.914Z"
+  },
+  "jobs": [
+    {
+      "id": 15,
+      "name": "installed_wheel",
+      "status": "success",
+      "duration": 7.32596,
+      "runner_id": 1,
+      "web_url": "http://127.0.0.1:8929/root/data-process/-/jobs/15",
+      "artifact_members": [
+        ".ci-reports/installed-smoke.json",
+        ".ci-reports/console-smoke.json"
+      ],
+      "artifact_archive_sha256": "09d5184f1d62da29deee13149f1caba9f3e944aff5e9f5888d5a115a59ccc9e6"
+    },
+    {
+      "id": 14,
+      "name": "build_wheel",
+      "status": "success",
+      "duration": 2.33794,
+      "runner_id": 1,
+      "web_url": "http://127.0.0.1:8929/root/data-process/-/jobs/14",
+      "artifact_members": [
+        "dist/manifest.json",
+        "dist/runtime-requirements.txt",
+        "dist/data_process-0.1.0+g34253a628b0cae7679204cb31109c2645c2ec3f8-py3-none-any.whl"
+      ],
+      "artifact_archive_sha256": "2fd3fd9ce842131411dd267118fcf8fdaf861381b16828fa5a193557060677af"
+    },
+    {
+      "id": 13,
+      "name": "core_test",
+      "status": "success",
+      "duration": 28.762644,
+      "runner_id": 1,
+      "web_url": "http://127.0.0.1:8929/root/data-process/-/jobs/13",
+      "artifact_members": [
+        ".ci-reports/source-smoke.json",
+        ".ci-reports/junit.xml"
+      ],
+      "artifact_archive_sha256": "9abf33b1c69211ff51c2cdf97bbcfdee56ad0299f07d743421ba3b53f00c6235"
+    }
+  ],
+  "junit_totals": {
+    "tests": 67,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "manifest_commit_matches": true,
+  "wheel_hash_matches": true,
+  "requirements_hash_matches": true,
+  "installed_commit_matches": true,
+  "public_manual_executed": false,
+  "artifact_boundary_verified": true
+}

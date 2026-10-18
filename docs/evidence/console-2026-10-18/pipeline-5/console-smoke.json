@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "commit_sha": "34253a628b0cae7679204cb31109c2645c2ec3f8",
+  "installed_http_console": true,
+  "only_loopback_network": true,
+  "business_state_used": false,
+  "gitlab_credentials_used": false
+}

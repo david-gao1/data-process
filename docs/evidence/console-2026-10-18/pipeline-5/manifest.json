@@ -1,0 +1,10 @@
+{
+  "commit_sha": "34253a628b0cae7679204cb31109c2645c2ec3f8",
+  "version": "0.1.0+g34253a628b0cae7679204cb31109c2645c2ec3f8",
+  "runtime_lock_sha256": "52fb6b74b304c2c72b36863ec31817849643d38479279b42932cd443cfee1a2e",
+  "wheel": "data_process-0.1.0+g34253a628b0cae7679204cb31109c2645c2ec3f8-py3-none-any.whl",
+  "wheel_sha256": "387681651a4e6f519cebbcbe6ddeb2fa391e1e5ff132f9ee8ec2c07132e77d86",
+  "python": "3.11.17",
+  "wheel_members_checked": true,
+  "runtime_requirements_sha256": "ac19b49d95cf20d65b4e092b6a3543b69d2c971df03fa014cf577c4e2915d41d"
+}

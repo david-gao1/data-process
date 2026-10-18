@@ -6,6 +6,6 @@
   "browser_fixture_unchanged": true,
   "server_ci_lint": true,
   "independent_review": "two findings fixed and cleared",
-  "gitlab_readonly_identity": "awaiting explicit authorization",
+  "gitlab_readonly_identity": "user deferred token creation; links only",
   "existing_business_data_used": false
 }

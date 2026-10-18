@@ -33,6 +33,8 @@
 
 ## 5 提交与交付
 
-- [ ] 更新docs/12-console-runbook.md、agent.md和脱敏证据；不提交token/入口文件/运行数据。
-- [ ] 全回归与服务端CI Lint后commit，正常合并main，显式双远端push，核对真实三项job与精确SHA制品。
-- [ ] 从该wheel安装到隔离体验环境验证页面可用；若需要实时GitLab身份，在完成可审查实现后请求最小只读token创建确认，不使用管理员PAT或扩大现有Runner权限。
+- [x] 更新docs/12-console-runbook.md、agent.md和脱敏证据；不提交token/入口文件/运行数据。
+- [x] 全回归与服务端CI Lint后commit，正常合并main，显式双远端push，核对真实三项job与精确SHA制品。
+- [x] 从该wheel安装到隔离体验环境验证页面可用；若需要实时GitLab身份，在完成可审查实现后请求最小只读token创建确认，不使用管理员PAT或扩大现有Runner权限。
+
+执行结果：用户选择不创建新GitLab只读身份，门户保持未连接并提供固定项目链接。真实pipeline #5验证源码34253a6的67项Linux测试、制品和HTTP页面。最终文档commit仍须核对真实流水线及隔离安装，结果在当前会话交付。
