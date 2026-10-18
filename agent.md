@@ -39,3 +39,11 @@
 ## DevOps 与前端方向
 
 2026-10-18 用户选择“业务与 DevOps 两者整合的统一门户，先只读概览再逐步增加操作”。官方调研见 docs/research/2026-10-18-gitlab-devops.md，落地建议见 docs/11-devops-visual-console-roadmap.md。软件应用版本、计算定义版本、业务 run、GitLab pipeline、数据 delivery 必须区分。当前 main-only Runner 不能直接承接普通 feature/MR 测试或宿主部署；不为实现 DevOps 而放宽既有隔离。Web 真实接入与访问控制按 Standard Lane 设计；不将此方向记录当作新增令牌、部署或业务写操作的批准。
+
+## 只读门户开发经验
+
+首版设计/计划位于docs/design/2026-10-18-read-only-console.md与docs/plans/2026-10-18-read-only-console.md，运行手册docs/12-console-runbook.md。门户不连接现有业务目录，先使用专用合成演示；固定loopback、Host/Origin/Fetch-Metadata、一次性fragment引导与Strict/HttpOnly会话。公开静态页面不含数据，可接受本机入口文件的顶层导航；敏感API/session仍拒绝跨站。入口秘密不输出日志/聊天/URL查询参数。
+
+独立审查发现并修复：入口先resolve会跟随末级symlink并覆盖其目标，必须只解析父目录并以O_NOFOLLOW打开末级文件；心跳合法JSON也可能为列表/null，必须校验对象和时间值，不能让单产品异常破坏总览。新增回归已覆盖。质量摘要校验report_hash；只显示允许状态日志。
+
+uv sync可能复用本地包缓存，开发验证已安装代码时使用--reinstall-package data-process，避免错误地验证旧副本。浏览器测试用独立headless会话，验证后给用户打开入口需重启门户换新引导值。新GitLab只读身份仍需明确批准，不把现有推送bot交给Web服务。

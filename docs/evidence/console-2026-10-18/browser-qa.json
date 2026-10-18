@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "navigation_views": 5,
+  "pagination": true,
+  "state_filter": true,
+  "detail_dialog": true,
+  "empty_state": true,
+  "mobile_width": 390,
+  "no_page_errors": true,
+  "business_fixture_unchanged": true
+}

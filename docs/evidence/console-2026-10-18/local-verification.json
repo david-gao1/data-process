@@ -1,0 +1,11 @@
+{
+  "platform": "macOS arm64",
+  "tests": 68,
+  "failures": 0,
+  "browser_views": 5,
+  "browser_fixture_unchanged": true,
+  "server_ci_lint": true,
+  "independent_review": "two findings fixed and cleared",
+  "gitlab_readonly_identity": "awaiting explicit authorization",
+  "existing_business_data_used": false
+}

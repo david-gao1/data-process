@@ -63,3 +63,11 @@ def test_builder_rejects_false_ci_commit_without_writing_artifact(tmp_path):
                           cwd=ROOT,env=env,text=True,capture_output=True)
     assert result.returncode!=0 and 'does not match checkout' in result.stderr
     assert not (tmp_path/'dist').exists()
+
+
+def test_installed_console_assets_are_part_of_package():
+    from importlib.resources import files
+    assets = files('data_process').joinpath('web_assets')
+    assert '数据交付工作台' in assets.joinpath('index.html').read_text()
+    assert 'same-origin' in assets.joinpath('console.js').read_text()
+    assert '--green' in assets.joinpath('console.css').read_text()

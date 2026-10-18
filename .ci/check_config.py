@@ -46,7 +46,7 @@ def validate(path):
     assert config['variables']['GIT_STRATEGY']=='clone' and config['variables']['GIT_DEPTH']=='0'
     assert config['default']['retry']==0 and 'services' not in config['default']
     allowed={'.ci-reports/junit.xml','.ci-reports/source-smoke.json','.ci-reports/installed-smoke.json',
-             '.ci-reports/public-status.json','dist/*.whl','dist/manifest.json','dist/runtime-requirements.txt'}
+             '.ci-reports/public-status.json','.ci-reports/console-smoke.json','dist/*.whl','dist/manifest.json','dist/runtime-requirements.txt'}
     for job in jobs:
         artifacts=config[job]['artifacts']
         if artifacts['access']!='developer' or not artifacts['expire_in']:raise ValueError('artifact access/retention missing')

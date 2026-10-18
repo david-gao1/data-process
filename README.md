@@ -2,7 +2,7 @@
 
 一个本机可运行、可恢复的受控数据交付平台。已完成两条业务闭环：合成事件的三省活跃用户统计，以及UCI公开真实零售交易的每日国家开票/取消净额。两者都经过独立质量校验、受控发布和正式查询。
 
-Python + DuckDB 1.4.1 + 不可变 Parquet + SQLite 控制状态。定义、release、run、delivery 分离；异步运行、日志、取消、超时、重启核对、同日期幂等替换、审批 CAS、版本回滚和备份恢复均有实际测试。macOS launchd 负责每日触发、worker 保活与每小时健康检查；预先批准的固定版本可自动发布。没有网页或公开服务。
+Python + DuckDB 1.4.1 + 不可变 Parquet + SQLite 控制状态。定义、release、run、delivery 分离；异步运行、日志、取消、超时、重启核对、同日期幂等替换、审批 CAS、版本回滚和备份恢复均有实际测试。macOS launchd 负责每日触发、worker 保活与每小时健康检查；预先批准的固定版本可自动发布。现已增加本机只读管理门户；没有公开服务。
 
 ```bash
 ./scripts/setup.sh
@@ -46,3 +46,5 @@ Python + DuckDB 1.4.1 + 不可变 Parquet + SQLite 控制状态。定义、relea
 GitLab 已完成本机私有项目与受限 Shell Runner 接入，三项真实 CI（核心测试、commit 绑定 wheel、独立安装验证）通过；见 [CI/CD 手册](docs/10-gitlab-ci-runbook.md)和[接入验收](docs/evidence/gitlab/runner-2026-10-18/README.md)。GitHub 与本机 GitLab 的 main 按当次授权同步；UCI 网络回放仍为显式手动作业，未部署应用。
 
 下一阶段：以“数据运行 + 研发交付”的只读统一门户体验 DevOps。已完成[官方资料调研](docs/research/2026-10-18-gitlab-devops.md)和[项目落地路线](docs/11-devops-visual-console-roadmap.md)；门户、Web API、软件部署与新增权限仍处于设计阶段。
+
+只读统一门户：参见[运行手册](docs/12-console-runbook.md)。五个视图整合业务运行与研发交付；默认仅本机、先接专用合成环境。GitLab实时摘要使用单独批准的只读身份，未配置时明确显示未连接。

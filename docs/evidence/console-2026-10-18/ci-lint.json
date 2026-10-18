@@ -1,0 +1,10 @@
+{
+  "valid": true,
+  "errors": [],
+  "jobs": [
+    "core_test",
+    "build_wheel",
+    "installed_wheel",
+    "public_retail_manual"
+  ]
+}

@@ -65,7 +65,7 @@ installed_wheel:
     when: always
     access: developer
     expire_in: 7 days
-    paths: [.ci-reports/installed-smoke.json]
+    paths: [.ci-reports/installed-smoke.json, .ci-reports/console-smoke.json]
 
 public_retail_manual:
   stage: public_data

@@ -7,14 +7,24 @@ name = "data-process"
 version = "0.1.0"
 description = "Local governed daily active-user data product"
 requires-python = ">=3.10,<3.13"
-dependencies = ["duckdb==1.4.1", "openpyxl==3.1.5"]
+dependencies = [
+    "duckdb==1.4.1",
+    "fastapi==0.143.3",
+    "openpyxl==3.1.5",
+    "uvicorn==0.54.0",
+]
 
 [project.optional-dependencies]
-dev = ["pytest==8.4.2", "PyYAML==6.0.3"]
+dev = [
+    "httpx==0.28.1",
+    "pytest==8.4.2",
+    "PyYAML==6.0.3",
+]
 
 [project.scripts]
 dp = "data_process.cli:main"
 dp-smoke = "data_process.smoke:main"
+dp-console = "data_process.web:main"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

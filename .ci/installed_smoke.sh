@@ -12,3 +12,5 @@ uv pip install --python .wheel-venv/bin/python --no-deps dist/*.whl
 mkdir -p .ci-reports
 # -I ignores checkout/PYTHONPATH; smoke children work outside the repository.
 .wheel-venv/bin/python -I -m data_process.smoke --expect-commit "$commit" --output .ci-reports/installed-smoke.json
+
+.wheel-venv/bin/python -I -m data_process.web_smoke --expect-commit "$commit" --output .ci-reports/console-smoke.json
