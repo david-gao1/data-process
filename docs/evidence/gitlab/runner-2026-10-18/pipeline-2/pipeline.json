@@ -1,0 +1,65 @@
+{
+  "pipeline": {
+    "id": 2,
+    "sha": "541796d45f110e5a864cafef2bc2fe2a2425383d",
+    "status": "success",
+    "web_url": "http://127.0.0.1:8929/root/data-process/-/pipelines/2",
+    "ref": "main",
+    "source": "push",
+    "created_at": "2026-10-18T06:32:05.812Z",
+    "finished_at": "2026-10-18T06:32:45.093Z"
+  },
+  "jobs": [
+    {
+      "id": 6,
+      "name": "installed_wheel",
+      "status": "success",
+      "duration": 6.993088,
+      "runner_id": 1,
+      "web_url": "http://127.0.0.1:8929/root/data-process/-/jobs/6",
+      "artifact_members": [
+        ".ci-reports/installed-smoke.json"
+      ],
+      "artifact_archive_sha256": "a512cdab8854731ab5a4579f612e4ab8114ccdb3f3fae0ce8ac889f974b79812"
+    },
+    {
+      "id": 5,
+      "name": "build_wheel",
+      "status": "success",
+      "duration": 1.820105,
+      "runner_id": 1,
+      "web_url": "http://127.0.0.1:8929/root/data-process/-/jobs/5",
+      "artifact_members": [
+        "dist/manifest.json",
+        "dist/runtime-requirements.txt",
+        "dist/data_process-0.1.0+g541796d45f110e5a864cafef2bc2fe2a2425383d-py3-none-any.whl"
+      ],
+      "artifact_archive_sha256": "98c4f11c04838479eed1d02c028e3d57664628d587ca38e346f89b15037fe896"
+    },
+    {
+      "id": 4,
+      "name": "core_test",
+      "status": "success",
+      "duration": 25.773555,
+      "runner_id": 1,
+      "web_url": "http://127.0.0.1:8929/root/data-process/-/jobs/4",
+      "artifact_members": [
+        ".ci-reports/source-smoke.json",
+        ".ci-reports/junit.xml"
+      ],
+      "artifact_archive_sha256": "af34a91ea4e6de52cfba476d1251ab382cd1696afba41e0e315c0ff18dbbfebe"
+    }
+  ],
+  "junit_totals": {
+    "tests": 50,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "manifest_commit_matches": true,
+  "wheel_hash_matches": true,
+  "requirements_hash_matches": true,
+  "installed_commit_matches": true,
+  "public_manual_executed": false,
+  "artifact_boundary_verified": true
+}

@@ -1,6 +1,6 @@
 # GitLab CI/CD 准备与接入手册
 
-当前接入状态（2026-10-18）：现有 GitLab CE 19.4.2 healthy，私有项目 http://127.0.0.1:8929/root/data-process 已创建。专用 Shell Project Runner 正在接入；官方 Runner 19.4.0 arm64 SHA256 已核验，服务端静态 CI Lint 通过，macOS 51 项测试通过。真实流水线结果以 runner-2026-10-18 验收记录和服务端当前 SHA 为准。用户随后明确批准同时推送 GitHub origin 和 gitlab-local。
+当前状态（2026-10-18）：本机私有 root/data-process 与专用 Shell Project Runner 接入完成。真实流水线 #2 对 541796d45f110e5a864cafef2bc2fe2a2425383d 的 core_test/build_wheel/installed_wheel 全成功，Linux50项与macOS51项测试通过；下载 artifacts 验证了 commit 和 hash。GitHub origin 与 gitlab-local 已同步该 main；最终文档提交后的最新 SHA/流水线另行实测核对。详见 [接入验收](evidence/gitlab/runner-2026-10-18/README.md)。未运行真实 UCI manual，未部署。
 
 ## 流水线和Runner
 

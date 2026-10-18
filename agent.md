@@ -31,3 +31,7 @@
 6. 保留脱敏证据和失败原因，更新此文件与手册；文档变更形成新 commit 后，也需核对新 SHA 的流水线。不要把旧流水线当新 HEAD 成功。
 
 接入计划、官方校验与验收证据：docs/evidence/gitlab/runner-2026-10-18/。
+
+## 本轮真实验收
+
+2026-10-18：commit 541796d45f110e5a864cafef2bc2fe2a2425383d 在两远端 main 相同，真实 pipeline #2 的三项 job 全通过，Linux50项、macOS51项；下载 artifacts 的完整 SHA/hash 与成员白名单验收通过。见 docs/evidence/gitlab/runner-2026-10-18/README.md 和 pipeline-2/pipeline.json。历史验收只对记录的 SHA 有效；读取本文件后仍须检查当前 HEAD/最新流水线。
