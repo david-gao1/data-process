@@ -13,6 +13,8 @@ services:
     networks: [isolated]
 volumes:
   runner_config:
+    external: true
+    name: data-process-gitlab-runner_runner_config
   runner_work:
 networks:
   isolated:

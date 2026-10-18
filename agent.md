@@ -16,6 +16,7 @@
 - 桌面控制若提示 Computer Use not active，先同次调用 getAXState 再执行操作；不能据此判断 GitLab/代码故障。项目创建复用了 Chrome 已登录 root 会话，空项目不初始化 README。
 - 官方 Runner 19.4.0 linux-arm64 下载已与 release.sha256 核验，详见 runner-download.json。构建上下文仅 Dockerfile 和该二进制，不能包含 .local 凭据。
 - 构建时 Debian HTTP 主索引多次超时；同容器 HTTPS 可达。Dockerfile 改为官方 HTTPS 源、进程级 ForceIPv4 与 30 秒 timeout 后索引 9 秒下载完成；不改宿主/Docker 全局网络设置。
+- 首次 pipeline #1 在 prepare environment 失败，未进入业务测试。Debian 默认 .bash_logout 的 clear_console 在非交互 login shell + 显式 exit 0 时返回 1；同脚本无显式 exit 则 0。清空该 hook 后复现返回 0；镜像与既有专用工作卷均需处理，重建 Runner 不会覆盖已有卷中的 dotfile。依据 https://docs.gitlab.com/runner/shells/#shell-profile-loading 。
 - Shell executor 忽略 image；工具应在镜像预装。CI job 非 root、无 sudo，不可 apt/pip 全局安装。GIT_STRATEGY=clone 避免持久工作区中的旧 wheel/venv 污染，GIT_DEPTH=0 保持完整历史。
 - Runner 内 URL 和 clone_url 使用 gitlab:8929，不能写 127.0.0.1；控制进程 root 用于降权执行 job，认证配置卷和 UID1000 工作卷分离。Shell 只执行可信项目 main，不能视为 job 间强隔离。
 - 受保护 main、Project Runner locked、专属 tag data-process-local-shell、关闭 untagged/shared runners；workflow 仅 protected main push/web。keep_latest_artifact=false，避免“最新成功”无限保留。

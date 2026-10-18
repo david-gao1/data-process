@@ -11,5 +11,7 @@ RUN echo "${RUNNER_SHA256}  /usr/local/bin/gitlab-runner" | sha256sum -c - \
     && useradd --uid 1000 --create-home --shell /bin/bash gitlab-runner \
     && chmod 700 /home/gitlab-runner \
     && test ! -e /usr/bin/sudo
+# Debian's default logout hook calls clear_console, which fails without a TTY.
+RUN install -o gitlab-runner -g gitlab-runner -m 644 /dev/null /home/gitlab-runner/.bash_logout
 ENTRYPOINT ["gitlab-runner"]
 CMD ["run", "--config", "/etc/gitlab-runner/config.toml", "--working-directory", "/home/gitlab-runner", "--user", "gitlab-runner"]

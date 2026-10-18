@@ -1,0 +1,64 @@
+{
+  "container": "data-process-gitlab-runner-runner-1",
+  "image": "sha256:c705797b3d3d8af589b571543882d5e7784e5e71fa4a337a8aed4ed494571fdd",
+  "cpu_limit": 2,
+  "memory_limit_bytes": 2147483648,
+  "privileged": false,
+  "security_opt": [
+    "no-new-privileges:true"
+  ],
+  "mounts": [
+    {
+      "Type": "volume",
+      "Name": "data-process-gitlab-runner_runner_config",
+      "Destination": "/etc/gitlab-runner"
+    },
+    {
+      "Type": "volume",
+      "Name": "data-process-gitlab-runner_runner_work",
+      "Destination": "/home/gitlab-runner"
+    }
+  ],
+  "controller": {
+    "concurrent": 1,
+    "runner_limit": 1,
+    "executor": "shell",
+    "url": "http://gitlab:8929/",
+    "clone_url": "http://gitlab:8929/",
+    "config_uid": 0,
+    "config_mode": "0o600",
+    "config_directory_mode": "0o700"
+  },
+  "job_user_checks": [
+    "uid=1000(gitlab-runner) gid=1000(gitlab-runner) groups=1000(gitlab-runner)",
+    "Python 3.11.17",
+    "uv 0.10.9"
+  ],
+  "job_cannot_read_config": true,
+  "job_cannot_modify_runner_binary": true,
+  "sudo_absent": true,
+  "docker_socket_absent": true,
+  "preserved_containers": [
+    {
+      "name": "data-process-gitlab-server-1",
+      "started_at": "2026-10-18T05:40:07.114194922Z",
+      "running": true,
+      "restart_count": 0,
+      "oom_killed": false
+    },
+    {
+      "name": "flink-learning-control-plane",
+      "started_at": "2026-10-18T05:27:55.612979792Z",
+      "running": true,
+      "restart_count": 0,
+      "oom_killed": false
+    },
+    {
+      "name": "dataops-airflow-control-plane",
+      "started_at": "2026-10-18T05:27:55.6078735Z",
+      "running": true,
+      "restart_count": 0,
+      "oom_killed": false
+    }
+  ]
+}
