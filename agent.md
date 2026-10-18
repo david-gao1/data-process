@@ -35,3 +35,7 @@
 ## 本轮真实验收
 
 2026-10-18：commit 541796d45f110e5a864cafef2bc2fe2a2425383d 在两远端 main 相同，真实 pipeline #2 的三项 job 全通过，Linux50项、macOS51项；下载 artifacts 的完整 SHA/hash 与成员白名单验收通过。见 docs/evidence/gitlab/runner-2026-10-18/README.md 和 pipeline-2/pipeline.json。历史验收只对记录的 SHA 有效；读取本文件后仍须检查当前 HEAD/最新流水线。
+
+## DevOps 与前端方向
+
+2026-10-18 用户选择“业务与 DevOps 两者整合的统一门户，先只读概览再逐步增加操作”。官方调研见 docs/research/2026-10-18-gitlab-devops.md，落地建议见 docs/11-devops-visual-console-roadmap.md。软件应用版本、计算定义版本、业务 run、GitLab pipeline、数据 delivery 必须区分。当前 main-only Runner 不能直接承接普通 feature/MR 测试或宿主部署；不为实现 DevOps 而放宽既有隔离。Web 真实接入与访问控制按 Standard Lane 设计；不将此方向记录当作新增令牌、部署或业务写操作的批准。
