@@ -1,23 +1,20 @@
 workflow:
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS'
-      when: never
-    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH'
-    - if: '$CI_PIPELINE_SOURCE == "web" && $CI_COMMIT_BRANCH'
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "main" && $CI_COMMIT_REF_PROTECTED == "true"'
+    - if: '$CI_PIPELINE_SOURCE == "web" && $CI_COMMIT_BRANCH == "main" && $CI_COMMIT_REF_PROTECTED == "true"'
     - when: never
 
 stages: [test, build, verify, public_data]
 
 variables:
   UV_CACHE_DIR: "$CI_PROJECT_DIR/.cache/uv"
-  DP_RUNNER_TAG: "linux-docker"
+  GIT_STRATEGY: clone
+  GIT_DEPTH: "0"
   RUN_PUBLIC_RETAIL: "0"
 
-# GitLab Server stores/co-ordinates; a separate non-privileged Docker Runner executes.
+# Dedicated container, shell executor; tools are installed in its reviewed image.
 default:
-  image: python:3.11.17-slim-bookworm
-  tags: ["$DP_RUNNER_TAG"]
+  tags: ["data-process-local-shell"]
   interruptible: true
   timeout: 30m
   retry: 0
@@ -82,8 +79,6 @@ public_retail_manual:
       allow_failure: true
     - when: never
   script:
-    - apt-get update -qq
-    - apt-get install -y --no-install-recommends curl ca-certificates
     - sh .ci/public_replay.sh
   after_script:
     - rm -rf .ci-state/public-retail .ci-state/public-retail-backup .ci-state/public-result.json .ci-state/public-download.json .ci-state/public-error.log

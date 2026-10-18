@@ -1,0 +1,111 @@
+{
+  "valid": true,
+  "errors": [],
+  "warnings": [],
+  "merged_yaml": "---\nworkflow:\n  rules:\n  - if: $CI_PIPELINE_SOURCE == \"push\" && $CI_COMMIT_BRANCH == \"main\" && $CI_COMMIT_REF_PROTECTED\n      == \"true\"\n  - if: $CI_PIPELINE_SOURCE == \"web\" && $CI_COMMIT_BRANCH == \"main\" && $CI_COMMIT_REF_PROTECTED\n      == \"true\"\n  - when: never\nstages:\n- \".pre\"\n- test\n- build\n- verify\n- public_data\n- \".post\"\nvariables:\n  UV_CACHE_DIR: \"$CI_PROJECT_DIR/.cache/uv\"\n  GIT_STRATEGY: clone\n  GIT_DEPTH: '0'\n  RUN_PUBLIC_RETAIL: '0'\ndefault:\n  tags:\n  - data-process-local-shell\n  interruptible: true\n  timeout: 30m\n  retry: 0\n  before_script:\n  - sh .ci/bootstrap.sh\n  cache:\n    key:\n      files:\n      - uv.lock\n      prefix: uv-python-3.11.17\n    paths:\n    - \".cache/uv/\"\ncore_test:\n  stage: test\n  script:\n  - \".venv/bin/python .ci/check_config.py\"\n  - \".venv/bin/python -m pytest -m 'not macos' --junitxml=.ci-reports/junit.xml -v\"\n  - \".venv/bin/python -I -m data_process.smoke --output .ci-reports/source-smoke.json\"\n  artifacts:\n    when: always\n    access: developer\n    expire_in: 7 days\n    reports:\n      junit:\n      - \".ci-reports/junit.xml\"\n    paths:\n    - \".ci-reports/junit.xml\"\n    - \".ci-reports/source-smoke.json\"\nbuild_wheel:\n  stage: build\n  needs:\n  - job: core_test\n    artifacts: false\n  script:\n  - \".venv/bin/python .ci/build_wheel.py\"\n  artifacts:\n    access: developer\n    expire_in: 14 days\n    paths:\n    - dist/*.whl\n    - dist/manifest.json\n    - dist/runtime-requirements.txt\ninstalled_wheel:\n  stage: verify\n  needs:\n  - job: build_wheel\n    artifacts: true\n  script:\n  - sh .ci/installed_smoke.sh\n  artifacts:\n    when: always\n    access: developer\n    expire_in: 7 days\n    paths:\n    - \".ci-reports/installed-smoke.json\"\npublic_retail_manual:\n  stage: public_data\n  timeout: 40m\n  needs:\n  - job: installed_wheel\n    artifacts: false\n  rules:\n  - if: $CI_PIPELINE_SOURCE == \"web\" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH &&\n      $RUN_PUBLIC_RETAIL == \"1\"\n    when: manual\n    allow_failure: true\n  - when: never\n  script:\n  - sh .ci/public_replay.sh\n  after_script:\n  - rm -rf .ci-state/public-retail .ci-state/public-retail-backup .ci-state/public-result.json\n    .ci-state/public-download.json .ci-state/public-error.log\n  artifacts:\n    when: always\n    access: developer\n    expire_in: 3 days\n    paths:\n    - \".ci-reports/public-status.json\"\n",
+  "includes": [],
+  "jobs": [
+    {
+      "name": "core_test",
+      "stage": "test",
+      "before_script": [
+        "sh .ci/bootstrap.sh"
+      ],
+      "script": [
+        ".venv/bin/python .ci/check_config.py",
+        ".venv/bin/python -m pytest -m 'not macos' --junitxml=.ci-reports/junit.xml -v",
+        ".venv/bin/python -I -m data_process.smoke --output .ci-reports/source-smoke.json"
+      ],
+      "after_script": [],
+      "tag_list": [
+        "data-process-local-shell"
+      ],
+      "only": null,
+      "except": null,
+      "environment": null,
+      "when": "on_success",
+      "allow_failure": false,
+      "needs": null
+    },
+    {
+      "name": "build_wheel",
+      "stage": "build",
+      "before_script": [
+        "sh .ci/bootstrap.sh"
+      ],
+      "script": [
+        ".venv/bin/python .ci/build_wheel.py"
+      ],
+      "after_script": [],
+      "tag_list": [
+        "data-process-local-shell"
+      ],
+      "only": null,
+      "except": null,
+      "environment": null,
+      "when": "on_success",
+      "allow_failure": false,
+      "needs": [
+        {
+          "name": "core_test",
+          "artifacts": false,
+          "optional": false
+        }
+      ]
+    },
+    {
+      "name": "installed_wheel",
+      "stage": "verify",
+      "before_script": [
+        "sh .ci/bootstrap.sh"
+      ],
+      "script": [
+        "sh .ci/installed_smoke.sh"
+      ],
+      "after_script": [],
+      "tag_list": [
+        "data-process-local-shell"
+      ],
+      "only": null,
+      "except": null,
+      "environment": null,
+      "when": "on_success",
+      "allow_failure": false,
+      "needs": [
+        {
+          "name": "build_wheel",
+          "artifacts": true,
+          "optional": false
+        }
+      ]
+    },
+    {
+      "name": "public_retail_manual",
+      "stage": "public_data",
+      "before_script": [
+        "sh .ci/bootstrap.sh"
+      ],
+      "script": [
+        "sh .ci/public_replay.sh"
+      ],
+      "after_script": [
+        "rm -rf .ci-state/public-retail .ci-state/public-retail-backup .ci-state/public-result.json .ci-state/public-download.json .ci-state/public-error.log"
+      ],
+      "tag_list": [
+        "data-process-local-shell"
+      ],
+      "only": null,
+      "except": null,
+      "environment": null,
+      "when": "on_success",
+      "allow_failure": false,
+      "needs": [
+        {
+          "name": "installed_wheel",
+          "artifacts": false,
+          "optional": false
+        }
+      ]
+    }
+  ]
+}

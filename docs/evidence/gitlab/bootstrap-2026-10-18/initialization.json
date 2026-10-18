@@ -1,0 +1,187 @@
+{
+  "time_utc": "2026-10-18T05:43:16.016830+00:00",
+  "stage": "healthy",
+  "container": "data-process-gitlab-server-1",
+  "gitlab_version_manifest": "gitlab-ce 19.4.2",
+  "image_verification": {
+    "official_manifest_digest": "sha256:1d72e8769f7c0f417ac5f8a2e2ecff7ccaded3d75072873148ee6b4f384a5742",
+    "image_config_digest": "sha256:9f4af13b2258dc29b6da03a03ddf78e9721f48add57a88a2a25b712d72065bb9",
+    "architecture": "arm64",
+    "os": "linux",
+    "layers_verified": 9,
+    "repo_tag": "gitlab/gitlab-ce:19.4.2-ce.0"
+  },
+  "delivery": "Docker Hub ordinary pull failed with registry EOF; official blobs downloaded with system curl IPv4 and TLS verification; manifest, compressed blob, config and uncompressed diff_id SHA256 verified; docker load; compose up -d --pull never",
+  "limits": {
+    "cpus": 6,
+    "memory_gib": 10,
+    "shm_mib": 256,
+    "privileged": false,
+    "restart": "no",
+    "port": "127.0.0.1:8929",
+    "host_bind_or_socket_mounts": false
+  },
+  "volumes": [
+    "data-process-gitlab_gitlab_config",
+    "data-process-gitlab_gitlab_logs",
+    "data-process-gitlab_gitlab_data"
+  ],
+  "health": {
+    "health": {
+      "http": 200,
+      "result": "GitLab OK"
+    },
+    "readiness": {
+      "http": 200,
+      "result": {
+        "status": "ok",
+        "db_check": [
+          {
+            "status": "ok"
+          }
+        ],
+        "cache_check": [
+          {
+            "status": "ok"
+          }
+        ],
+        "concurrency_limit_check": [
+          {
+            "status": "ok"
+          }
+        ],
+        "db_load_balancing_check": [
+          {
+            "status": "ok"
+          }
+        ],
+        "feature_flag_check": [
+          {
+            "status": "ok"
+          }
+        ],
+        "queues_check": [
+          {
+            "status": "ok"
+          }
+        ],
+        "queues_metadata_check": [
+          {
+            "status": "ok"
+          }
+        ],
+        "rate_limiting_check": [
+          {
+            "status": "ok"
+          }
+        ],
+        "repository_cache_check": [
+          {
+            "status": "ok"
+          }
+        ],
+        "sessions_check": [
+          {
+            "status": "ok"
+          }
+        ],
+        "shared_state_check": [
+          {
+            "status": "ok"
+          }
+        ],
+        "trace_chunks_check": [
+          {
+            "status": "ok"
+          }
+        ],
+        "chat_check": [
+          {
+            "status": "ok"
+          }
+        ],
+        "workhorse_check": [
+          {
+            "status": "ok"
+          }
+        ],
+        "gitaly_check": [
+          {
+            "status": "ok",
+            "labels": {
+              "shard": "default"
+            }
+          }
+        ]
+      }
+    },
+    "liveness": {
+      "http": 200,
+      "result": {
+        "status": "ok"
+      }
+    },
+    "host_signin": {
+      "http": 200
+    }
+  },
+  "host_monitoring_endpoints": "404 from host; internal probes all pass; default monitoring IP allowlist retained",
+  "state": {
+    "running": true,
+    "health": "healthy",
+    "oom_killed": false,
+    "restart_count": 0
+  },
+  "services": [
+    "run: alertmanager: (pid 2454) 49s; run: log: (pid 2206) 68s",
+    "run: gitaly: (pid 2396) 51s; run: log: (pid 1175) 164s",
+    "run: gitlab-exporter: (pid 2409) 50s; run: log: (pid 2068) 87s",
+    "run: gitlab-kas: (pid 1588) 155s; run: log: (pid 1625) 152s",
+    "run: gitlab-workhorse: (pid 2371) 52s; run: log: (pid 1882) 100s",
+    "run: logrotate: (pid 1038) 179s; run: log: (pid 1071) 176s",
+    "run: nginx: (pid 2392) 51s; run: log: (pid 1996) 93s",
+    "run: postgres-exporter: (pid 2468) 48s; run: log: (pid 2230) 64s",
+    "run: postgresql: (pid 1205) 161s; run: log: (pid 1222) 158s",
+    "run: prometheus: (pid 2428) 49s; run: log: (pid 2140) 76s",
+    "run: puma: (pid 1720) 114s; run: log: (pid 1756) 111s",
+    "run: redis: (pid 1080) 173s; run: log: (pid 1096) 172s",
+    "run: redis-exporter: (pid 2416) 50s; run: log: (pid 2105) 82s",
+    "run: sidekiq: (pid 1769) 108s; run: log: (pid 1827) 105s",
+    "run: sshd: (pid 93) 184s; run: log: (pid 92) 184s"
+  ],
+  "existing_containers": [
+    {
+      "name": "data-process-gitlab-server-1",
+      "state": "running",
+      "status": "Up 3 minutes (healthy)"
+    },
+    {
+      "name": "flink-learning-control-plane",
+      "state": "running",
+      "status": "Up 15 minutes"
+    },
+    {
+      "name": "dataops-airflow-control-plane",
+      "state": "running",
+      "status": "Up 15 minutes"
+    },
+    {
+      "name": "middle-local-kafka",
+      "state": "exited",
+      "status": "Exited (143) 2 months ago"
+    }
+  ],
+  "resource_stats": [
+    "data-process-gitlab-server-1 2.968GiB / 10GiB 15.72%",
+    "flink-learning-control-plane 2.34GiB / 17.29GiB 8.56%",
+    "dataops-airflow-control-plane 2.935GiB / 17.29GiB 22.86%"
+  ],
+  "initial_password_file_present": true,
+  "password_content_read": false,
+  "credentials_transmitted": false,
+  "runner_registered": false,
+  "push_or_application_deployment": false,
+  "settings_or_daemon_restart": false,
+  "next": "User first login as root and change password in local browser; then confirm private project namespace and separate Runner authorization",
+  "status": "initialization complete; no denial or uncertain result; user login and Runner registration remain pending"
+}

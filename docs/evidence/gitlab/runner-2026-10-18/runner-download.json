@@ -1,0 +1,8 @@
+{
+  "version": "19.4.0",
+  "architecture": "linux-arm64",
+  "url": "https://s3.dualstack.us-east-1.amazonaws.com/gitlab-runner-downloads/v19.4.0/binaries/gitlab-runner-linux-arm64",
+  "checksums_url": "https://s3.dualstack.us-east-1.amazonaws.com/gitlab-runner-downloads/v19.4.0/release.sha256",
+  "sha256": "54853fcca3afb7a3726378ee197282939c5bae8978ef0d02b9926b1685d52deb",
+  "verified": true
+}

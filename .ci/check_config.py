@@ -41,7 +41,9 @@ def selected(rules,env):
 def validate(path):
     config=yaml.load(Path(path).read_text(),Loader=UniqueLoader)
     jobs=('core_test','build_wheel','installed_wheel','public_retail_manual')
-    assert config['default']['image']=='python:3.11.17-slim-bookworm'
+    assert 'image' not in config['default']
+    assert config['default']['tags']==['data-process-local-shell']
+    assert config['variables']['GIT_STRATEGY']=='clone' and config['variables']['GIT_DEPTH']=='0'
     assert config['default']['retry']==0 and 'services' not in config['default']
     allowed={'.ci-reports/junit.xml','.ci-reports/source-smoke.json','.ci-reports/installed-smoke.json',
              '.ci-reports/public-status.json','dist/*.whl','dist/manifest.json','dist/runtime-requirements.txt'}
@@ -49,12 +51,14 @@ def validate(path):
         artifacts=config[job]['artifacts']
         if artifacts['access']!='developer' or not artifacts['expire_in']:raise ValueError('artifact access/retention missing')
         if not set(artifacts['paths'])<=allowed:raise ValueError('artifact is outside the curated software/status allowlist')
-    scenarios=[('push','feature','',True),('push','feature','project!1',False),
-               ('merge_request_event','','project!1',True),('web','feature','project!1',True),
-               ('push','','',False),('schedule','main','',False),('api','main','',False)]
-    for source,branch,mr,expected in scenarios:
-        env={'CI_PIPELINE_SOURCE':source,'CI_COMMIT_BRANCH':branch,'CI_OPEN_MERGE_REQUESTS':mr}
-        assert (selected(config['workflow']['rules'],env)!='never')==expected,(source,branch,mr)
+    scenarios=[('push','main','true',True),('web','main','true',True),
+               ('push','main','false',False),('web','main','false',False),
+               ('push','feature','true',False),('web','feature','true',False),
+               ('merge_request_event','main','true',False),('push','','true',False),
+               ('schedule','main','true',False),('api','main','true',False)]
+    for source,branch,protected,expected in scenarios:
+        env={'CI_PIPELINE_SOURCE':source,'CI_COMMIT_BRANCH':branch,'CI_COMMIT_REF_PROTECTED':protected}
+        assert (selected(config['workflow']['rules'],env)!='never')==expected,(source,branch,protected)
     public_rules=config['public_retail_manual']['rules']
     for source,branch,enabled,wanted in [('push','main','1','never'),('merge_request_event','feature','1','never'),
                                           ('web','main','0','never'),('web','main','1','manual'),('web','feature','1','never')]:

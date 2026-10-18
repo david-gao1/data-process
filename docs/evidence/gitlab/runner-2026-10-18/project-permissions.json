@@ -1,0 +1,73 @@
+{
+  "project": {
+    "id": 1,
+    "path_with_namespace": "root/data-process",
+    "visibility": "private",
+    "shared_runners_enabled": false,
+    "keep_latest_artifact": false
+  },
+  "runner": {
+    "id": 1,
+    "description": "data-process-local-shell",
+    "runner_type": "project_type",
+    "locked": true,
+    "run_untagged": false,
+    "access_level": "ref_protected",
+    "tag_list": [
+      "data-process-local-shell"
+    ],
+    "maximum_timeout": null,
+    "projects": [
+      {
+        "id": 1,
+        "description": null,
+        "name": "data-process",
+        "name_with_namespace": "Administrator / data-process",
+        "path": "data-process",
+        "path_with_namespace": "root/data-process",
+        "created_at": "2026-10-18T06:24:18.415Z",
+        "default_branch": "main",
+        "tag_list": [],
+        "topics": [],
+        "ssh_url_to_repo": "git@127.0.0.1:root/data-process.git",
+        "http_url_to_repo": "http://127.0.0.1:8929/root/data-process.git",
+        "web_url": "http://127.0.0.1:8929/root/data-process",
+        "readme_url": null,
+        "forks_count": 0,
+        "avatar_url": null,
+        "star_count": 0,
+        "last_activity_at": "2026-10-18T06:24:18.337Z",
+        "visibility": "private",
+        "namespace": {
+          "id": 1,
+          "name": "Administrator",
+          "path": "root",
+          "kind": "user",
+          "full_path": "root",
+          "parent_id": null,
+          "avatar_url": "https://www.gravatar.com/avatar/16b47079f597deb6cee051688fa944f607f7f127a68ac1d1d5c6289d5e8a8e8d?s=80&d=identicon",
+          "web_url": "http://127.0.0.1:8929/root"
+        }
+      }
+    ]
+  },
+  "main": {
+    "name": "main",
+    "push_access_levels": [
+      {
+        "id": 1,
+        "access_level": 40,
+        "access_level_description": "Maintainers",
+        "deploy_key_id": null
+      }
+    ],
+    "merge_access_levels": [
+      {
+        "id": 1,
+        "access_level": 40,
+        "access_level_description": "Maintainers"
+      }
+    ],
+    "allow_force_push": false
+  }
+}

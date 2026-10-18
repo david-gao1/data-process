@@ -1,0 +1,20 @@
+services:
+  runner:
+    image: data-process-shell-runner:19.4.0-python3.11.17
+    platform: linux/arm64
+    restart: "no"
+    cpus: 2
+    mem_limit: 2g
+    privileged: false
+    security_opt: ["no-new-privileges:true"]
+    volumes:
+      - runner_config:/etc/gitlab-runner
+      - runner_work:/home/gitlab-runner
+    networks: [isolated]
+volumes:
+  runner_config:
+  runner_work:
+networks:
+  isolated:
+    external: true
+    name: data-process-gitlab_isolated
